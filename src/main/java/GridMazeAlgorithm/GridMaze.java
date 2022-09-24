@@ -33,36 +33,34 @@ public class GridMaze {
     public LinkedList<int[]> freeAdjacentCells(int y, int x){
         LinkedList<int[]> adj = new LinkedList<int[]>();
 
-        int indexY = y*2+1;
-        int indexX = x*2+1;
 
-        if(!(0<=indexX && indexX<gridWidth && 0<= indexY && indexY < gridHeight)){
+        if(!(0<=x && x<gridWidth && 0<= y && y < gridHeight)){
             throw new RuntimeException("X or Y is not within the boundaries");
         }
 
-        if(1<=indexY-2){
-            int[] up = {indexY-2,indexX};
+        if(1<=y-2){
+            int[] up = {y-2,x};
             if (freeCell(up)){
                 adj.add(up);
             }
         }
 
-        if(indexY+2<=gridHeight-1){
-            int[] down = {indexY+2,indexX};
+        if(y+2<=gridHeight-1){
+            int[] down = {y+2,x};
             if (freeCell(down)){
                 adj.add(down);
             }
         }
 
-        if(0<=indexX-2){
-            int[] left = {indexY,indexX-2};
+        if(0<=x-2){
+            int[] left = {y,x-2};
             if (freeCell(left)){
                 adj.add(left);
             }
         }
 
-        if(indexX+2 <= gridWidth-1){
-            int[] right = {indexY,indexX+2};
+        if(x+2 <= gridWidth-1){
+            int[] right = {y,x+2};
             if (freeCell(right)){
                 adj.add(right);
             }
@@ -77,7 +75,7 @@ public class GridMaze {
 
     public void setCell(int indexY, int indexX, byte token){
         if(!(0<=indexX && indexX<gridWidth && 0<= indexY && indexY < gridHeight)){
-            throw new RuntimeException("X or Y is not within the boundaries");
+            throw new RuntimeException("X: " + indexX + " or Y: " +indexY+" is not within the boundaries");
         }
 
         grid[indexY][indexX] = token;
@@ -112,12 +110,6 @@ public class GridMaze {
     public static void main(String[] args) {
         GridMaze G = new GridMaze(5,3);
 
-        //printAdj(G.adjacentCells(0,1));
-        System.out.println("");
-        G.setCell(5,9, (byte)1);
-
-        G.printMaze();
-        printAdj(G.freeAdjacentCells(2,3));
     }
 
 }

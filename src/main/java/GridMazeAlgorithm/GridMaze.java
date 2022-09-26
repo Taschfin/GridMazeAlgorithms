@@ -1,18 +1,26 @@
 package GridMazeAlgorithm;
 
+import javafx.scene.shape.Rectangle;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class GridMaze {
 
-    byte [][] grid;
+    public byte [][] grid;
     int gridHeight;
     int gridWidth;
 
-    public GridMaze(int width, int height){
+    public Rectangle[][] rectangles;
+
+
+    public GridMaze(int width, int height, Rectangle[][] rectangles){
         gridHeight = height*2+1;
         gridWidth = width*2+1;
         grid = new byte[gridHeight][gridWidth];
+        this.rectangles =rectangles;
+
+        copy_reset();
 
         // Builds Rows and Cols for the Maze (loops splitet for efficiency)
 
@@ -107,8 +115,16 @@ public class GridMaze {
         }
     }
 
+    public void copy_reset (){
+        byte[][] m = grid.clone();
+        Rectangle[][] n = rectangles.clone();
+
+        this.grid = m;
+        this.rectangles =n;
+
+        }
+
     public static void main(String[] args) {
-        GridMaze G = new GridMaze(5,3);
 
     }
 

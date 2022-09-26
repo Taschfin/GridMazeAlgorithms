@@ -33,51 +33,68 @@ public class GridMazeGuiController{
     private final float mazePaneWidth = 500;
     private final float mazePaneHeight = 500;
 
+    private int cols;
+    private int rows;
+
+    GridMaze grid;
+
     private GridMaze gridArray;
     private String[] Algorithms = {"DFS","Dijkstra"};
     private Stage stage;
     private Scene scene;
     private Parent root;
 
-    private ArrayList<ArrayList> recs;
+    //private ArrayList<ArrayList<Rectangle>> recs;
+
+    private Rectangle[][] recs;
 
     public void createMazeView(int rows, int cols){
-        recs = new  ArrayList<ArrayList>();
+        //recs = new  ArrayList<ArrayList<Rectangle>>();
 
+        int w = cols*2+1;
+        int h = rows*2+1;
 
-        for(int i = 0; i< rows;i++){
-            ArrayList rectanglesInRow = new ArrayList<>();
-            for(int j = 0; j<cols;j++){
-                Rectangle r = new Rectangle(j*(mazePaneWidth/(float)cols),i*(mazePaneWidth/(float)rows),(mazePaneWidth/(float)cols),(mazePaneWidth/(float)rows));
-                rectanglesInRow.add(r);
-                rectanglesInRow.add(true);
-                r.setStroke();
-                r.setFill(Color.BLUE);
-                Line ln = new Line((j)*(mazePaneWidth/(float)cols),i*(mazePaneWidth/(float)rows),(j)*(mazePaneWidth/(float)cols),(i+1)*(mazePaneWidth/(float)rows));
-                Line ln2 = new Line(j*(mazePaneWidth/(float)cols),(i)*(mazePaneWidth/(float)rows),(j+1)*(mazePaneWidth/(float)cols),(i)*(mazePaneWidth/(float)rows));
+        recs = new Rectangle[h][w];
 
+        for(int i = 0; i < h;i++){
+            //ArrayList rectanglesInRow = new ArrayList<>();
+            for(int j = 0; j< w;j++){
+                Rectangle wall = new Rectangle(j*(mazePaneWidth/(float)w),(i)*(mazePaneWidth/(float)h),(mazePaneWidth/(float)w),(mazePaneWidth/(float)h));
+                if (i%2==0){
+                    wall.setFill(Color.BLACK);
+                } else if(j%2==0) {
+                    wall.setFill(Color.BLACK);
+                }
+                else {
+                    wall.setFill(Color.WHITE);
+                }
 
-                mazePane.getChildren().add(ln);
-                mazePane.getChildren().add(ln2);
-                mazePane.getChildren().add(r);
+                wall.setStroke(Color.BLACK);
+
+                //rectanglesInRow.add(wall);
+
+                mazePane.getChildren().add(wall);
+                recs[i][j] = wall;
             }
-            recs.add(rectanglesInRow);
+
         }
+
 
     }
 
 
-    public void generateRandomMaze(){
-
+    public void generateRandomMaze() throws InterruptedException {
+        grid.copy_reset();
+        //createMazeView(this.rows,this.cols);
+        RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
     }
 
     public void initialize(int rows, int cols){
-
+        this.rows = rows;
+        this.cols = cols;
         createMazeView(rows,cols);
 
-        GridMazeRectnagles k = new GridMazeRectnagles(recs);
-
-
+        grid = new GridMaze(cols,rows,recs);
 
         DropDown.getItems().addAll(Algorithms);
     }

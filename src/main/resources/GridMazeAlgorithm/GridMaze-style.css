@@ -1,0 +1,9 @@
+.Grid-pane{
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+}
+
+.Cell{
+    -fx-background-color: black, white;
+    -fx-background-insets: 0, 5 5 5 5;
+}

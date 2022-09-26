@@ -1,0 +1,26 @@
+@font-face {
+    font-family: "Lato Light";
+    src: url("../fonts/Lato-Light.ttf");
+}
+
+.Main-text {
+    -fx-font-family: "Lato Light";
+    -fx-font-size: 50px;
+}
+
+.input {
+    -fx-font-family: "Lato Light";
+    -fx-font-size: 15px;
+}
+
+.btn{
+    -fx-font-family: "Lato Light";
+    -fx-font-size: 15px;
+    -fx-background-color: #2596be;
+    -fx-background-radius: 30;
+}
+
+.btn:hover{
+    -fx-background-color: #76b5c5;
+    -fx-cursor: hand;
+}

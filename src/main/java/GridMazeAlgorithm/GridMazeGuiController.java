@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GridMazeGuiController{
 
@@ -26,6 +27,9 @@ public class GridMazeGuiController{
 
     @FXML
     private Button backButton;
+
+    @FXML
+    private Button startAlgo;
 
     @FXML
     private Pane mazePane;
@@ -39,25 +43,20 @@ public class GridMazeGuiController{
     GridMaze grid;
 
     private GridMaze gridArray;
-    private String[] Algorithms = {"DFS","Dijkstra"};
+    private String[] Algorithms = {"DFS","BFS","Dijkstra"};
     private Stage stage;
     private Scene scene;
     private Parent root;
 
-    //private ArrayList<ArrayList<Rectangle>> recs;
-
     private Rectangle[][] recs;
 
     public void createMazeView(int rows, int cols){
-        //recs = new  ArrayList<ArrayList<Rectangle>>();
-
         int w = cols*2+1;
         int h = rows*2+1;
 
         recs = new Rectangle[h][w];
 
         for(int i = 0; i < h;i++){
-            //ArrayList rectanglesInRow = new ArrayList<>();
             for(int j = 0; j< w;j++){
                 Rectangle wall = new Rectangle(j*(mazePaneWidth/(float)w),(i)*(mazePaneWidth/(float)h),(mazePaneWidth/(float)w),(mazePaneWidth/(float)h));
                 if (i%2==0){
@@ -83,10 +82,21 @@ public class GridMazeGuiController{
     }
 
 
-    public void generateRandomMaze() throws InterruptedException {
-        grid.copy_reset();
-        //createMazeView(this.rows,this.cols);
+    public void generateRandomMaze()  {
+        DropDown.setDisable(false);
+        startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
+        grid.freePaths();
+        grid.setCell(51,51, (byte)15);
+    }
+
+    public void solve() throws InterruptedException {
+        if (DropDown.getValue()=="DFS"){
+            RandomDepthFirstSearch.rdfssolve(grid,1,1);
+            }
+        if (DropDown.getValue()=="BFS"){
+            BreadthFirstSearch.bfs(grid,1,1);
+        }
     }
 
     public void initialize(int rows, int cols){
@@ -96,12 +106,15 @@ public class GridMazeGuiController{
 
         grid = new GridMaze(cols,rows,recs);
 
+
         DropDown.getItems().addAll(Algorithms);
     }
 
 
     public void switchToScene1(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("MazeSize-view.fxml"));
+
+        grid = null;
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);

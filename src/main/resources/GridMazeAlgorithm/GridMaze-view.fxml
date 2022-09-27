@@ -40,8 +40,8 @@
               </rowConstraints>
                <children>
                   <Button mnemonicParsing="false" onAction="#generateRandomMaze" text="Generate Maze" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                  <Button disable="true" mnemonicParsing="false" text="Start Algorithm" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                  <ChoiceBox fx:id="DropDown" disable="true" prefWidth="150.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Button fx:id="startAlgo" disable="true" mnemonicParsing="false" onAction="#solve" text="Start Algorithm" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <ChoiceBox fx:id="DropDown" disable="true" prefWidth="150.0" style="-fx-background-radius: 20;" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Button fx:id="backButton" mnemonicParsing="false" onAction="#switchToScene1" text="Go Back" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                </children>
             </GridPane>

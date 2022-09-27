@@ -38,7 +38,17 @@ public class GridMaze {
         }
     }
 
-    public LinkedList<int[]> freeAdjacentCells(int y, int x){
+    public void freePaths () {
+        for (int i = 0; i< gridHeight;i++) {
+            for (int j = 0; j< gridWidth;j++) {
+                if (grid[i][j] == (byte)1) {
+                    grid[i][j] = (byte)0;
+                }
+            }
+        }
+    }
+
+    public LinkedList<int[]> freeAdjacentCells(int y, int x, boolean built){
         LinkedList<int[]> adj = new LinkedList<int[]>();
 
 
@@ -46,31 +56,62 @@ public class GridMaze {
             throw new RuntimeException("X or Y is not within the boundaries");
         }
 
-        if(1<=y-2){
-            int[] up = {y-2,x};
-            if (freeCell(up)){
-                adj.add(up);
+        if(!built) {
+            if (1 <= y - 2) {
+                int[] up = {y - 2, x};
+                if (freeCell(up)) {
+                    adj.add(up);
+                }
+            }
+
+            if (y + 2 <= gridHeight - 1) {
+                int[] down = {y + 2, x};
+                if (freeCell(down)) {
+                    adj.add(down);
+                }
+            }
+
+            if (0 <= x - 2) {
+                int[] left = {y, x - 2};
+                if (freeCell(left)) {
+                    adj.add(left);
+                }
+            }
+
+            if (x + 2 <= gridWidth - 1) {
+                int[] right = {y, x + 2};
+                if (freeCell(right)) {
+                    adj.add(right);
+                }
             }
         }
-
-        if(y+2<=gridHeight-1){
-            int[] down = {y+2,x};
-            if (freeCell(down)){
-                adj.add(down);
+        else{
+            if (grid[y-1][x]!=3 && grid[y-1][x]!=7) {
+                int[] up = {y - 1, x};
+                if (freeCell(up)) {
+                    adj.add(up);
+                }
             }
-        }
 
-        if(0<=x-2){
-            int[] left = {y,x-2};
-            if (freeCell(left)){
-                adj.add(left);
+            if (grid[y+1][x]!=3 && grid[y+1][x]!=7) {
+                int[] down = {y + 1, x};
+                if (freeCell(down)) {
+                    adj.add(down);
+                }
             }
-        }
 
-        if(x+2 <= gridWidth-1){
-            int[] right = {y,x+2};
-            if (freeCell(right)){
-                adj.add(right);
+            if (grid[y][x-1]!=3 && grid[y][x-1]!=7) {
+                int[] left = {y, x-1};
+                if (freeCell(left)) {
+                    adj.add(left);
+                }
+            }
+
+            if (grid[y][x+1]!=3 || grid[y][x+1]!=7) {
+                int[] right = {y, x + 1};
+                if (freeCell(right)) {
+                    adj.add(right);
+                }
             }
         }
 
@@ -111,7 +152,7 @@ public class GridMaze {
 
     public static void printAdj(LinkedList<int[]> adj){
         for(int[] cell: adj){
-            System.out.print("Y: " + cell[0] + " X: " + cell[1] + "   ");
+            System.out.println("Y: " + cell[0] + " X: " + cell[1] + "   ");
         }
     }
 
@@ -124,8 +165,5 @@ public class GridMaze {
 
         }
 
-    public static void main(String[] args) {
-
-    }
 
 }

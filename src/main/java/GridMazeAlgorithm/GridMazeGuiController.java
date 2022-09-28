@@ -87,15 +87,18 @@ public class GridMazeGuiController{
         startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
         grid.freePaths();
-        grid.setCell(51,51, (byte)15);
+        grid.setCell(15,15, (byte) 15);
     }
 
     public void solve() throws InterruptedException {
+        Colorizer c = new Colorizer();
         if (DropDown.getValue()=="DFS"){
-            RandomDepthFirstSearch.rdfssolve(grid,1,1);
+            RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(c);
+            rdf.rdfssolve(grid,1,1);
             }
         if (DropDown.getValue()=="BFS"){
-            BreadthFirstSearch.bfs(grid,1,1);
+            BreadthFirstSearch bfs = new BreadthFirstSearch(c);
+            bfs.bfs(grid,1,1);
         }
     }
 

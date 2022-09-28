@@ -13,8 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 public class RandomDepthFirstSearch {
 
-
-    public RandomDepthFirstSearch(GridMaze G){
+    Colorizer c;
+    public RandomDepthFirstSearch(Colorizer c){
+        this.c = c;
     }
 
 
@@ -33,33 +34,33 @@ public class RandomDepthFirstSearch {
 
 
         for (int[] neighbour: neighbours){
-           if(G.freeCell(neighbour)){
-               if(neighbour[0]< y){
-                   (G.rectangles[y-1][x]).setFill(Color.WHITE);
-                   (G.rectangles[y-1][x]).setStroke(Color.WHITE);
-                   G.grid[y-1][x] = (byte)1;
-               }
-               else if (neighbour[0]> y) {
-                   (G.rectangles[y+1][x]).setFill(Color.WHITE);
-                   (G.rectangles[y+1][x]).setStroke(Color.WHITE);
-                   G.grid[y+1][x] = (byte)1;
-               }
-               else if (neighbour[1]> x) {
-                   (G.rectangles[y][x+1]).setFill(Color.WHITE);
-                   (G.rectangles[y][x+1]).setStroke(Color.WHITE);
-                   G.grid[y][x+1] = (byte)1;
-               }
-               else {
-                   (G.rectangles[y][x-1]).setFill(Color.WHITE);
-                   (G.rectangles[y][x-1]).setStroke(Color.WHITE);
-                   G.grid[y][x-1] = (byte)1;
-               }
-           }
-           createMazeRDFS(G,neighbour[0],neighbour[1]);
+            if(G.freeCell(neighbour)){
+                if(neighbour[0]< y){
+                    (G.rectangles[y-1][x]).setFill(Color.WHITE);
+                    (G.rectangles[y-1][x]).setStroke(Color.WHITE);
+                    G.grid[y-1][x] = (byte)1;
+                }
+                else if (neighbour[0]> y) {
+                    (G.rectangles[y+1][x]).setFill(Color.WHITE);
+                    (G.rectangles[y+1][x]).setStroke(Color.WHITE);
+                    G.grid[y+1][x] = (byte)1;
+                }
+                else if (neighbour[1]> x) {
+                    (G.rectangles[y][x+1]).setFill(Color.WHITE);
+                    (G.rectangles[y][x+1]).setStroke(Color.WHITE);
+                    G.grid[y][x+1] = (byte)1;
+                }
+                else {
+                    (G.rectangles[y][x-1]).setFill(Color.WHITE);
+                    (G.rectangles[y][x-1]).setStroke(Color.WHITE);
+                    G.grid[y][x-1] = (byte)1;
+                }
+            }
+            createMazeRDFS(G,neighbour[0],neighbour[1]);
         }
     }
 
-    public static void rdfssolve(GridMaze G, int y, int x) throws InterruptedException {
+    public void rdfssolve(GridMaze G, int y, int x){
         LinkedList<int[]> neighbours = G.freeAdjacentCells(y,x,true);
         Collections.shuffle(neighbours);
 
@@ -70,7 +71,7 @@ public class RandomDepthFirstSearch {
         //trans.play();
 
 
-        (G.rectangles[y][x]).setStroke(Color.GREEN);
+        c.drawTile(G.rectangles[y][x],Color.MAGENTA,Color.MAGENTA,10);
 
 
 

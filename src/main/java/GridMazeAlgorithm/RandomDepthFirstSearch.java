@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class RandomDepthFirstSearch {
 
     Colorizer c;
+    boolean found = false;
+
     public RandomDepthFirstSearch(Colorizer c){
         this.c = c;
     }
@@ -61,16 +63,16 @@ public class RandomDepthFirstSearch {
 
         G.grid[y][x].changeVisitable(false);
 
-
-        c.drawCell(G.grid[y][x],Color.MAGENTA,Color.MAGENTA,10);
+        if(!found) {
+            c.drawCell(G.grid[y][x], Color.MAGENTA, Color.MAGENTA, 10);
+        }
 
         if (G.grid[y][x].field == Cell.typeOfField.Target) {
             c.drawCell(G.grid[y][x],Color.RED,Color.RED,10);
             c.drawPath(G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
+            found = true;
             return;
         }
-
-
 
         for (int[] neighbour: neighbours){
             G.grid[neighbour[0]][neighbour[1]].changePrev(G.grid[y][x]);

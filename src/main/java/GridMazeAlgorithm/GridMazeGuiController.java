@@ -53,18 +53,32 @@ public class GridMazeGuiController{
         startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
         grid.freePaths();
+
+
     }
 
     public void solve() throws InterruptedException {
         Colorizer c = new Colorizer();
         if (DropDown.getValue()=="DFS"){
+            grid.freePaths();
+            grid.revizualize();
             RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(c);
             rdf.rdfssolve(grid,1,1);
             }
         if (DropDown.getValue()=="BFS"){
+            grid.freePaths();
+            grid.revizualize();
             BreadthFirstSearch bfs = new BreadthFirstSearch(c);
             bfs.bfs(grid,1,1);
         }
+        if (DropDown.getValue()=="Dijkstra"){
+            grid.freePaths();
+            grid.revizualize();
+            Dijkstra dij = new Dijkstra(c,grid);
+            dij.dijkstraAlgorithm(1,1);
+            //dij.testDijkstra();
+        }
+
     }
 
     public void initialize(int rows, int cols){
@@ -72,8 +86,10 @@ public class GridMazeGuiController{
         this.cols = cols;
 
         grid = new GridMaze(cols,rows,mazePane);
+        grid.gridClone = grid.grid.clone();
 
         grid.changeCellType(41,41, Cell.typeOfField.Target);
+
 
         DropDown.getItems().addAll(Algorithms);
     }

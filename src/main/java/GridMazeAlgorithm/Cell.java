@@ -30,7 +30,7 @@ public class Cell {
         }
 
         this.field = t;
-        this.distance = distance;
+        this.distance = Double.POSITIVE_INFINITY;
         this.x = x;
         this.y = y;
         this.indexX = indexX;

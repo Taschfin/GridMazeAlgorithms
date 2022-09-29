@@ -12,16 +12,21 @@ public class GridMaze {
     int gridHeight;
     int gridWidth;
 
+    public Cell[][] gridClone;
+
     public Cell[][] grid;
 
     double pixelSizeX = 500;
     double pixelSizeY = 500;
+
+    Pane canvas;
 
 
     public GridMaze(int width, int height, Pane mazePane){
         gridHeight = height*2+1;
         gridWidth = width*2+1;
         grid = new Cell[gridHeight][gridWidth];
+        this.canvas = mazePane;
 
         double widthOfCell = pixelSizeX/(double) gridWidth;
         double heightOfCell = pixelSizeY/(double) gridHeight;
@@ -134,6 +139,45 @@ public class GridMaze {
         return adj;
     }
 
+
+    public LinkedList<Cell> freeAdjacentCells(Cell c){
+        LinkedList<Cell> adj = new LinkedList<Cell>();
+
+        int x = c.indexX;
+        int y =  c.indexY;
+
+        if(!(0<x && x<gridWidth && 0< y&& y < gridHeight)){
+            throw new RuntimeException("X or Y is not within the boundaries");
+        }
+
+
+        if (grid[y-1][x].field == Cell.typeOfField.FreeField || grid[y-1][x].field ==Cell.typeOfField.Target) {
+            if (grid[y-1][x].visitable) {
+                adj.add(grid[y-1][x]);
+            }
+        }
+
+        if (grid[y+1][x].field == Cell.typeOfField.FreeField || grid[y+1][x].field ==Cell.typeOfField.Target) {
+            if (grid[y+1][x].visitable) {
+                adj.add(grid[y+1][x]);
+            }
+        }
+
+        if (grid[y][x-1].field == Cell.typeOfField.FreeField || grid[y][x-1].field ==Cell.typeOfField.Target) {
+            if (grid[y][x-1].visitable) {
+                adj.add(grid[y][x-1]);
+            }
+        }
+
+        if (grid[y][x+1].field == Cell.typeOfField.FreeField || grid[y][x+1].field ==Cell.typeOfField.Target) {
+            if (grid[y][x+1].visitable) {
+                adj.add(grid[y][x+1]);
+            }
+        }
+
+        return adj;
+    }
+
     public boolean freeCell(int[] pos){
         return grid[pos[0]][pos[1]].visitable;
     }
@@ -183,6 +227,16 @@ public class GridMaze {
     public static void printAdj(LinkedList<int[]> adj){
         for(int[] cell: adj){
             System.out.println("Neighbours Y: " + cell[0] + " X: " + cell[1] + "   ");
+        }
+    }
+
+    public void revizualize(){
+        for(Cell[] m : gridClone){
+            for(Cell k : m){
+                if(k.field == Cell.typeOfField.FreeField){
+                    k.changeColor(Color.WHITE,Color.WHITE);
+                }
+            }
         }
     }
 

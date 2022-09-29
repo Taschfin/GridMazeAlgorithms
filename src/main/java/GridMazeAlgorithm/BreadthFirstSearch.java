@@ -18,9 +18,9 @@ public class BreadthFirstSearch {
     public void bfs(GridMaze G, int x, int y)  {
         LinkedList<int[]> queue = new LinkedList<int[]>();
 
-        G.grid[y][x] = (byte) 1;
+        G.grid[y][x].changeVisitable(false);
 
-        this.colorizer.drawTile(G.rectangles[y][x],Color.LAWNGREEN,Color.LAWNGREEN,10);
+        this.colorizer.drawCell(G.grid[y][x],Color.LAWNGREEN,Color.LAWNGREEN,10);
         int[] k = {y,x};
 
         queue.add(k);
@@ -28,23 +28,23 @@ public class BreadthFirstSearch {
         while (!queue.isEmpty()){
             int[] m = queue.removeFirst();
 
-            if (G.grid[m[0]][m[1]]== (byte)15){
-                System.out.println(G.grid[m[0]][m[1]]);
-                this.colorizer.drawTile(G.rectangles[y][x],Color.RED,Color.RED,10);
+            if (G.grid[m[0]][m[1]].field == Cell.typeOfField.Target){
+                this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,10);
+                this.colorizer.drawPath(G,G.grid[m[0]][m[1]].pathToRoot(),Color.RED,Color.RED,10);
                 return;
             }
-            this.colorizer.drawTile(G.rectangles[m[0]][m[1]],Color.RED,Color.RED,1);
+            this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,1);
 
             for (int[] w : G.freeAdjacentCells(m[0],m[1],true)){
-                GridMaze.printAdj(G.freeAdjacentCells(m[0],m[1],true));
-                if(G.grid[w[0]][w[1]]==0){
-                    G.grid[w[0]][w[1]]=1;
+                if(G.grid[w[0]][w[1]].visitable==true){
+                    G.grid[w[0]][w[1]].changePrev(G.grid[m[0]][m[1]]);
+                    G.grid[w[0]][w[1]].changeVisitable(false);
                     int[] temp = {w[0],w[1]};
-                    this.colorizer.drawTile(G.rectangles[w[0]][w[1]],Color.LAWNGREEN,Color.LAWNGREEN,10);
+                    this.colorizer.drawCell(G.grid[w[0]][w[1]],Color.LAWNGREEN,Color.LAWNGREEN,10);
                     queue.add(temp);
                 }
             }
-            this.colorizer.drawTile(G.rectangles[m[0]][m[1]],Color.LAWNGREEN,Color.LAWNGREEN,1);
+            this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.LAWNGREEN,Color.LAWNGREEN,1);
         }
     }
 

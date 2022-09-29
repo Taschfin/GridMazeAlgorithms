@@ -24,36 +24,30 @@ public class RandomDepthFirstSearch {
         Collections.shuffle(neighbours);
 
 
-        G.grid[y][x]= (byte) 1;
-
-
-        (G.rectangles[y][x]).setFill(Color.WHITE);
-        (G.rectangles[y][x]).setStroke(Color.WHITE);
-
-
+        G.grid[y][x].changeVisitable(false);
 
 
         for (int[] neighbour: neighbours){
             if(G.freeCell(neighbour)){
                 if(neighbour[0]< y){
-                    (G.rectangles[y-1][x]).setFill(Color.WHITE);
-                    (G.rectangles[y-1][x]).setStroke(Color.WHITE);
-                    G.grid[y-1][x] = (byte)1;
+                    G.grid[y-1][x].changeColor(Color.WHITE,Color.WHITE);
+                    G.grid[y-1][x].changeTypeOfField(Cell.typeOfField.FreeField);
+                    G.grid[y-1][x].changeVisitable(false);
                 }
                 else if (neighbour[0]> y) {
-                    (G.rectangles[y+1][x]).setFill(Color.WHITE);
-                    (G.rectangles[y+1][x]).setStroke(Color.WHITE);
-                    G.grid[y+1][x] = (byte)1;
+                    G.grid[y+1][x].changeColor(Color.WHITE,Color.WHITE);
+                    G.grid[y+1][x].changeTypeOfField(Cell.typeOfField.FreeField);
+                    G.grid[y+1][x].changeVisitable(false);
                 }
                 else if (neighbour[1]> x) {
-                    (G.rectangles[y][x+1]).setFill(Color.WHITE);
-                    (G.rectangles[y][x+1]).setStroke(Color.WHITE);
-                    G.grid[y][x+1] = (byte)1;
+                    G.grid[y][x+1].changeColor(Color.WHITE,Color.WHITE);
+                    G.grid[y][x+1].changeTypeOfField(Cell.typeOfField.FreeField);
+                    G.grid[y][x+1].changeVisitable(false);
                 }
                 else {
-                    (G.rectangles[y][x-1]).setFill(Color.WHITE);
-                    (G.rectangles[y][x-1]).setStroke(Color.WHITE);
-                    G.grid[y][x-1] = (byte)1;
+                    G.grid[y][x-1].changeColor(Color.WHITE,Color.WHITE);
+                    G.grid[y][x-1].changeTypeOfField(Cell.typeOfField.FreeField);
+                    G.grid[y][x-1].changeVisitable(false);
                 }
             }
             createMazeRDFS(G,neighbour[0],neighbour[1]);
@@ -65,25 +59,25 @@ public class RandomDepthFirstSearch {
         Collections.shuffle(neighbours);
 
 
-        G.grid[y][x]= (byte) 1;
-
-        //Transition trans = new FillTransition(Duration.millis(10000),G.rectangles[y][x],Color.WHITE,Color.GREEN);
-        //trans.play();
+        G.grid[y][x].changeVisitable(false);
 
 
-        c.drawTile(G.rectangles[y][x],Color.MAGENTA,Color.MAGENTA,10);
+        c.drawCell(G.grid[y][x],Color.MAGENTA,Color.MAGENTA,10);
 
-
-
-        if (G.grid[y][x] == (byte) 15) {
-            System.out.println(x+" " +y);
+        if (G.grid[y][x].field == Cell.typeOfField.Target) {
+            c.drawCell(G.grid[y][x],Color.RED,Color.RED,10);
+            c.drawPath(G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
             return;
         }
 
 
+
         for (int[] neighbour: neighbours){
+            G.grid[neighbour[0]][neighbour[1]].changePrev(G.grid[y][x]);
             rdfssolve(G,neighbour[0],neighbour[1]);
         }
+
+
     }
 
 }

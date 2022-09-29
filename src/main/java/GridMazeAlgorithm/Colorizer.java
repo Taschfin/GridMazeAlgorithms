@@ -3,6 +3,8 @@ package GridMazeAlgorithm;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -15,13 +17,12 @@ public class Colorizer {
     }
 
 
-    public void drawTile(Rectangle r, Color fill,Color stroke,long sleep)
+    public void drawCell(Cell c, Color fill,Color stroke,long sleep)
     {
         this.executor.execute(()->
         {
 
-           r.setFill(fill);
-           r.setStroke(stroke);
+           c.changeColor(fill,stroke);
 
             try
             {
@@ -32,6 +33,25 @@ public class Colorizer {
 
             }
         });
+    }
+
+
+    public  void drawPath(GridMaze G,LinkedList<int[]> path, Color fill,Color stroke,int sleep){
+        this.executor.execute(
+                () ->
+                {
+                    for(int [] c: path)
+                    {
+                        G.grid[c[0]][c[1]].changeColor(fill,stroke);
+                        try
+                        {
+                            Thread.sleep(sleep);
+                        }
+                        catch (InterruptedException ex)
+                        {
+                        }
+                    }
+                });
     }
 
 }

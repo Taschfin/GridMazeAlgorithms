@@ -48,46 +48,11 @@ public class GridMazeGuiController{
     private Scene scene;
     private Parent root;
 
-    private Rectangle[][] recs;
-
-    public void createMazeView(int rows, int cols){
-        int w = cols*2+1;
-        int h = rows*2+1;
-
-        recs = new Rectangle[h][w];
-
-        for(int i = 0; i < h;i++){
-            for(int j = 0; j< w;j++){
-                Rectangle wall = new Rectangle(j*(mazePaneWidth/(float)w),(i)*(mazePaneWidth/(float)h),(mazePaneWidth/(float)w),(mazePaneWidth/(float)h));
-                if (i%2==0){
-                    wall.setFill(Color.BLACK);
-                } else if(j%2==0) {
-                    wall.setFill(Color.BLACK);
-                }
-                else {
-                    wall.setFill(Color.WHITE);
-                }
-
-                wall.setStroke(Color.BLACK);
-
-                //rectanglesInRow.add(wall);
-
-                mazePane.getChildren().add(wall);
-                recs[i][j] = wall;
-            }
-
-        }
-
-
-    }
-
-
     public void generateRandomMaze()  {
         DropDown.setDisable(false);
         startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
         grid.freePaths();
-        grid.setCell(15,15, (byte) 15);
     }
 
     public void solve() throws InterruptedException {
@@ -105,10 +70,10 @@ public class GridMazeGuiController{
     public void initialize(int rows, int cols){
         this.rows = rows;
         this.cols = cols;
-        createMazeView(rows,cols);
 
-        grid = new GridMaze(cols,rows,recs);
+        grid = new GridMaze(cols,rows,mazePane);
 
+        grid.changeCellType(41,41, Cell.typeOfField.Target);
 
         DropDown.getItems().addAll(Algorithms);
     }

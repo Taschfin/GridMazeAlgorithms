@@ -1,5 +1,8 @@
-package GridMazeAlgorithm;
+package GridMazeAlgorithm.Algorithms;
 
+import GridMazeAlgorithm.Cell;
+import GridMazeAlgorithm.Colorizer;
+import GridMazeAlgorithm.GridMaze;
 import javafx.animation.FillTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;

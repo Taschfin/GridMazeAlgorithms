@@ -5,4 +5,6 @@ module com.example.gridmazealgorithm {
 
     opens GridMazeAlgorithm to javafx.fxml;
     exports GridMazeAlgorithm;
+    exports GridMazeAlgorithm.Algorithms;
+    opens GridMazeAlgorithm.Algorithms to javafx.fxml;
 }

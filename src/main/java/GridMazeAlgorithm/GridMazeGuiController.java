@@ -1,23 +1,20 @@
 package GridMazeAlgorithm;
 
+import GridMazeAlgorithm.Algorithms.AStar;
+import GridMazeAlgorithm.Algorithms.BreadthFirstSearch;
+import GridMazeAlgorithm.Algorithms.Dijkstra;
+import GridMazeAlgorithm.Algorithms.RandomDepthFirstSearch;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class GridMazeGuiController{
 
@@ -43,7 +40,7 @@ public class GridMazeGuiController{
     GridMaze grid;
 
     private GridMaze gridArray;
-    private String[] Algorithms = {"DFS","BFS","Dijkstra"};
+    private String[] Algorithms = {"DFS","BFS","Dijkstra","A-Star"};
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -55,10 +52,12 @@ public class GridMazeGuiController{
         grid.freePaths();
 
 
+
     }
 
     public void solve() throws InterruptedException {
         Colorizer c = new Colorizer();
+        startAlgo.setDisable(true);
         if (DropDown.getValue()=="DFS"){
             grid.freePaths();
             grid.revizualize();
@@ -75,10 +74,16 @@ public class GridMazeGuiController{
             grid.freePaths();
             grid.revizualize();
             Dijkstra dij = new Dijkstra(c,grid);
-            dij.dijkstraAlgorithm(1,1);
+            dij.dijkstraAlgorithm(19,19,41,41);
             //dij.testDijkstra();
         }
-
+        if (DropDown.getValue()=="A-Star"){
+            grid.freePaths();
+            grid.revizualize();
+            AStar k  =new AStar(c,grid,1,1,41,41);
+            k.aStarAlgorithm();
+        }
+        startAlgo.setDisable(false);
     }
 
     public void initialize(int rows, int cols){

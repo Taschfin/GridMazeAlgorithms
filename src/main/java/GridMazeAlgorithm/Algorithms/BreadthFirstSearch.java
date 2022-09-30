@@ -1,5 +1,8 @@
-package GridMazeAlgorithm;
+package GridMazeAlgorithm.Algorithms;
 
+import GridMazeAlgorithm.Cell;
+import GridMazeAlgorithm.Colorizer;
+import GridMazeAlgorithm.GridMaze;
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;

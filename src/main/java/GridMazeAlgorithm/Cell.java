@@ -5,22 +5,26 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.LinkedList;
 
-public class Cell {
+public class Cell implements Comparable<Cell>{
 
-    enum typeOfField {FreeField, Wall,Root,Target};
 
-    typeOfField field;
 
-    Rectangle rec;
-    double distance;
-    double x;
-    double y;
+    public enum typeOfField {FreeField, Wall,Root,Target};
 
-    int indexX;
-    int indexY;
+    public typeOfField field;
 
-    boolean visitable = false;
-    Cell prev;
+    public Rectangle rec;
+    public double distance;
+    public double x;
+    public double y;
+
+    public int indexX;
+    public int indexY;
+
+    public boolean visitable = false;
+
+    public double fScore;
+    public Cell prev;
     Color fill;
     Color Stroke;
 
@@ -67,6 +71,14 @@ public class Cell {
         this.prev = previous;
     }
 
+    public boolean isTarget(){
+       return this.field == typeOfField.Target;
+    }
+
+    public void setFScore(double fScore){
+        this.fScore = fScore;
+    }
+
     public LinkedList<int[]> pathToRoot(){
         LinkedList<int[]> path =  new LinkedList<int[]>();
 
@@ -81,5 +93,11 @@ public class Cell {
         }
 
         return path;
+    }
+
+
+    @Override
+    public int compareTo(Cell o) {
+        return (int)(this.fScore- o.fScore);
     }
 }

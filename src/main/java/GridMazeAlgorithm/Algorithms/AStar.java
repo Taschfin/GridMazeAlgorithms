@@ -65,6 +65,7 @@ public class AStar {
             closed.add(temp);
             expand(temp);
             if (temp.isTarget()) {
+                this.colorizer.removeHeuristic(G,l,l2,5);
                 return temp;
             }
             this.colorizer.removeHeuristic(G,l,l2,5);

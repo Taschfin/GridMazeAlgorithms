@@ -61,7 +61,7 @@ public class GridMazeGuiController{
         startAlgo.setDisable(true);
         //System.out.println(Thread.activeCount());
         Cell targetFound;
-        this.colorizer = new Colorizer();
+
 
         if (combo.getValue()=="DFS"){
             grid.freePaths();
@@ -80,14 +80,14 @@ public class GridMazeGuiController{
             grid.freePaths();
             grid.revizualize();
             Dijkstra dij = new Dijkstra(this.colorizer,grid);
-            targetFound=dij.dijkstraAlgorithm(19,19,41,41);
+            targetFound=dij.dijkstraAlgorithm(1,1,21,21);
             //dij.testDijkstra();
             colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.BLUE,Color.BLUE,10);
         }
         if (combo.getValue()=="A-Star"){
             grid.freePaths();
             grid.revizualize();
-            AStar k  =new AStar(this.colorizer,grid,1,1,41,41);
+            AStar k  =new AStar(this.colorizer,grid,1,1,21,21);
             targetFound=k.aStarAlgorithm();
             colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
@@ -102,7 +102,9 @@ public class GridMazeGuiController{
         grid.gridClone = grid.grid.clone();
 
 
-        grid.changeCellType(41,41, Cell.typeOfField.Target);
+        grid.changeCellType(21,21, Cell.typeOfField.Target);
+        this.colorizer = new Colorizer();
+        System.out.println(Thread.activeCount());
 
         combo.getItems().addAll(Algorithms);
     }
@@ -112,6 +114,7 @@ public class GridMazeGuiController{
         root = FXMLLoader.load(getClass().getResource("MazeSize-view.fxml"));
 
         grid = null;
+        this.colorizer = null;
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);

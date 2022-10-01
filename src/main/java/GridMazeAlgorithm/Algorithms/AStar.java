@@ -23,9 +23,11 @@ public class AStar {
     Cell target;
     Colorizer colorizer;
     Button start;
+    String heuristic;
 
 
-    public AStar(Colorizer c, GridMaze g, int indexY, int indexX, int indexYtar, int indexXtar) {
+    public AStar(String heuristic,Colorizer c, GridMaze g, int indexY, int indexX, int indexYtar, int indexXtar) {
+        this.heuristic = heuristic;
         this.G = g;
         this.colorizer = c;
         this.indexX = indexX;
@@ -44,37 +46,45 @@ public class AStar {
 
         Cell target = G.grid[indexYtar][indexXtar];
 
-        double transToX = target.x + target.width/2.0;
-        double transToY = target.x + target.height/2.0;
+        double transToX = target.x + target.width / 2.0;
+        double transToY = target.x + target.height / 2.0;
 
 
         while (!open.isEmpty()) {
 
             Cell temp = open.poll();
 
-            double transFromX = temp.x + temp.width/2.0;
-            double transFromY = temp.y + temp.height/2.0;
+            double transFromX = temp.x + temp.width / 2.0;
+            double transFromY = temp.y + temp.height / 2.0;
 
-            Line l = new Line(transFromX,transFromY,transFromX,transToY);
-            Line l2 = new Line(transFromX,transToY,transToX,transToY);
+            Line l;
+            Line l2 = null;
+            if (heuristic == "Manhattan"){
+                l = new Line(transFromX, transFromY, transFromX, transToY);
+                l2= new Line(transFromX,transToY,transToX,transToY);
+            } else if (heuristic == "Euclidean") {
+                l= new Line(transFromX,transFromY,transToX,transToY);
+            }
+            else {
+                l = new Line(transFromX, transFromY, transFromX, transToY);
+                l2= new Line(transFromX,transToY,transToX,transToY);
+            }
 
-            this.colorizer.drawHeuristic(G,l,l2,Color.YELLOW, 5,20);
-
-
+            this.colorizer.drawHeuristic(heuristic,G,l,l2,Color.YELLOW, 5,30);
 
             closed.add(temp);
-            expand(temp);
+            expand(temp,heuristic);
             if (temp.isTarget()) {
-                this.colorizer.removeHeuristic(G,l,l2,5);
+                this.colorizer.removeHeuristic(heuristic,G,l,l2,5);
                 return temp;
             }
-            this.colorizer.removeHeuristic(G,l,l2,5);
+            this.colorizer.removeHeuristic(heuristic,G,l,l2,5);
         }
 
         return null;
     }
 
-    public void expand(Cell c) {
+    public void expand(Cell c,String heuristic) {
         this.colorizer.drawCell(c, Color.BLUE,Color.BLUE,10);
         for (Cell neighbour : this.G.freeAdjacentCells(c)) {
             if (closed.contains(neighbour)) {
@@ -90,7 +100,18 @@ public class AStar {
             neighbour.prev = c;
             neighbour.distance = dis;
 
-            double f = dis + Metriken.manhatten(neighbour, target);
+            double f;
+            if (heuristic == "Manhattan"){
+                f = dis + Metriken.manhatten(neighbour, target);
+            } else if (heuristic == "Euclidean") {
+                f = dis + Metriken.euclidean(neighbour, target);
+            }
+            else {
+                f=0;
+            }
+            
+
+            neighbour.fScore = f;
 
             if (!open.contains(neighbour)) {
                 open.add(neighbour);

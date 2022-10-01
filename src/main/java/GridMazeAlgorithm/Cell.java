@@ -26,6 +26,9 @@ public class Cell implements Comparable<Cell>{
 
     public boolean visitable = false;
 
+    public Color stroke;
+    public typeOfField t;
+
     public double fScore;
     public Cell prev;
     Color fill;
@@ -35,7 +38,8 @@ public class Cell implements Comparable<Cell>{
         if(t == typeOfField.FreeField || t == typeOfField.Target){
             this.visitable = true;
         }
-
+        this.t =t;
+        this.stroke = stroke;
         this.field = t;
         this.distance = Double.POSITIVE_INFINITY;
         this.x = x;
@@ -101,9 +105,17 @@ public class Cell implements Comparable<Cell>{
         return path;
     }
 
+    public Cell cloneCell(){
+        Cell c = new Cell(indexX,indexY,x,y,width, height, fill,stroke,prev, t);
+        return c;
+    }
+
 
     @Override
     public int compareTo(Cell o) {
-        return (int)(this.fScore- o.fScore);
+        if(this.fScore>o.fScore){
+            return -1;
+        }
+        return 1;
     }
 }

@@ -247,14 +247,26 @@ public class GridMaze {
     }
 
     public void revizualize(){
-        for(Cell[] m : gridClone){
+        for(Cell[] m : grid){
             for(Cell k : m){
-                if(k.field == Cell.typeOfField.FreeField){
+                if(k.field == Cell.typeOfField.FreeField || k.field == Cell.typeOfField.Target ){
                     k.changeColor(Color.WHITE,Color.WHITE);
+                }
+                else {
+                    k.changeColor(Color.BLACK,Color.BLACK);
                 }
             }
         }
     }
+
+    /*public Cell[][] gridClone(){
+        for(int i = 0; i<=gridHeight;i++){
+            for(int j = 0; j<=gridWidth;j++){
+                this.gridClone[i][j] = grid[i][j].cloneCell();
+            }
+        }
+        return gridClone;
+    }*/
 
    /* public void copy_reset (){
         byte[][] m = grid.clone();

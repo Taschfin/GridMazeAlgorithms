@@ -19,7 +19,9 @@
     -fx-font-size: 15px;
     -fx-background-color: #2596be;
     -fx-background-radius: 30;
-    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
 .select:hover{
@@ -35,6 +37,7 @@
     -fx-background-color: #2596be;
     -fx-background-radius: 30;
     -fx-prompt-text-fill: white;
+    -fx-text-fill: white;
     -fx-background-insets: 5 0 5 5;
     -fx-padding: 7 0 7 5;
     -fx-alignment: center ;

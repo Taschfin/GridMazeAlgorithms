@@ -60,17 +60,23 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void drawHeuristic(GridMaze G,Line l, Line l2,Color stroke, double strokeWidth,int sleep){
+    public  void drawHeuristic(String heuristic,GridMaze G,Line l, Line l2,Color stroke, double strokeWidth,int sleep){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    l.setStrokeWidth(strokeWidth);
-                    l2.setStrokeWidth(strokeWidth);
-                    l.setStroke(stroke);
-                    l2.setStroke(stroke);
+                    if (heuristic == "Manhattan") {
+                        l.setStrokeWidth(strokeWidth);
+                        l.setStroke(stroke);
+                        l2.setStrokeWidth(strokeWidth);
+                        l2.setStroke(stroke);
+                        G.canvas.getChildren().add(l2);
+                    } else if (heuristic == "Euclidean") {
+                        l.setStrokeWidth(strokeWidth);
+                        l.setStroke(stroke);
+                    }
                     G.canvas.getChildren().add(l);
-                    G.canvas.getChildren().add(l2);
+
                 });
 
 
@@ -88,13 +94,15 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void removeHeuristic(GridMaze G,Line l, Line l2,int sleep){
+    public  void removeHeuristic(String heuristic,GridMaze G,Line l, Line l2,int sleep){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     G.canvas.getChildren().remove(l);
-                    G.canvas.getChildren().remove(l2);
+                    if(heuristic == "Manhattan") {
+                        G.canvas.getChildren().remove(l2);
+                    }
                 });
 
 
@@ -104,10 +112,7 @@ public class Colorizer{
                 }
             }
         };
-
         this.executor.execute(runnable);
     }
 
-    public static void main(String[] args) {
-    }
 }

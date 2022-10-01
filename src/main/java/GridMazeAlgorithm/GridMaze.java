@@ -2,6 +2,7 @@ package GridMazeAlgorithm;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Arrays;
@@ -18,6 +19,9 @@ public class GridMaze {
 
     double pixelSizeX = 500;
     double pixelSizeY = 500;
+
+    public Line l;
+    public Line l2;
 
     Pane canvas;
 
@@ -180,6 +184,18 @@ public class GridMaze {
 
     public boolean freeCell(int[] pos){
         return grid[pos[0]][pos[1]].visitable;
+    }
+
+    public void drawLine(Line l, Line l2){
+        this.l = l;
+        this.l2 =l2;
+        this.canvas.getChildren().add(l);
+        this.canvas.getChildren().add(l2);
+    }
+
+    public void removeLine(){
+        this.canvas.getChildren().remove(this.l);
+        this.canvas.getChildren().remove(this.l2);
     }
 
     public void printMaze(){

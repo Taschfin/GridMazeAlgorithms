@@ -3,7 +3,9 @@ package GridMazeAlgorithm.Algorithms;
 import GridMazeAlgorithm.Cell;
 import GridMazeAlgorithm.Colorizer;
 import GridMazeAlgorithm.GridMaze;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -12,7 +14,7 @@ public class AStar {
     GridMaze G;
     int indexX;
     int indexY;
-    int IndexXtar;
+    int indexXtar;
     int indexYtar;
 
     PriorityQueue<Cell> open;
@@ -20,6 +22,7 @@ public class AStar {
 
     Cell target;
     Colorizer colorizer;
+    Button start;
 
 
     public AStar(Colorizer c, GridMaze g, int indexY, int indexX, int indexYtar, int indexXtar) {
@@ -27,7 +30,7 @@ public class AStar {
         this.colorizer = c;
         this.indexX = indexX;
         this.indexY = indexY;
-        this.IndexXtar = indexXtar;
+        this.indexXtar = indexXtar;
         this.indexYtar = indexYtar;
         this.open = new PriorityQueue<Cell>();
         this.closed = new LinkedList<Cell>();
@@ -35,23 +38,39 @@ public class AStar {
     }
 
 
-    public void aStarAlgorithm() {
+    public Cell aStarAlgorithm() {
         this.G.grid[indexY][indexX].setDistance(0);
         this.open.offer(this.G.grid[indexY][indexX]);
+
+        Cell target = G.grid[indexYtar][indexXtar];
+
+        double transToX = target.x + target.width/2.0;
+        double transToY = target.x + target.height/2.0;
 
 
         while (!open.isEmpty()) {
 
             Cell temp = open.poll();
 
-            if (temp.isTarget()) {
-                return;
-            }
+            double transFromX = temp.x + temp.width/2.0;
+            double transFromY = temp.y + temp.height/2.0;
+
+            Line l = new Line(transFromX,transFromY,transFromX,transToY);
+            Line l2 = new Line(transFromX,transToY,transToX,transToY);
+
+            this.colorizer.drawHeuristic(G,l,l2,Color.YELLOW, 5,20);
+
+
 
             closed.add(temp);
             expand(temp);
+            if (temp.isTarget()) {
+                return temp;
+            }
+            this.colorizer.removeHeuristic(G,l,l2,5);
         }
 
+        return null;
     }
 
     public void expand(Cell c) {

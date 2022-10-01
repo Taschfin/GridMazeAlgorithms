@@ -24,7 +24,7 @@
             <Font size="15.0" />
          </font>
          <padding>
-            <Insets left="20.0" right="20.0" />
+            <Insets bottom="5.0" left="25.0" right="25.0" top="5.0" />
          </padding>
       </Button>
       <Label fx:id="text" styleClass="Main-text" stylesheets="@MazeSize-style.css" text="Grid Maze Algorithms" GridPane.halignment="CENTER" GridPane.valignment="CENTER">

@@ -12,15 +12,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class GridMazeGuiController{
-
-
-    @FXML
-    private ChoiceBox<String> DropDown;
 
     @FXML
     private Button backButton;
@@ -30,6 +27,9 @@ public class GridMazeGuiController{
 
     @FXML
     private Pane mazePane;
+
+    @FXML
+    private ComboBox combo;
 
     private final float mazePaneWidth = 500;
     private final float mazePaneHeight = 500;
@@ -45,8 +45,10 @@ public class GridMazeGuiController{
     private Scene scene;
     private Parent root;
 
+    private Colorizer colorizer;
+
     public void generateRandomMaze()  {
-        DropDown.setDisable(false);
+        combo.setDisable(false);
         startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
         grid.freePaths();
@@ -55,35 +57,41 @@ public class GridMazeGuiController{
 
     }
 
-    public void solve() throws InterruptedException {
-        Colorizer c = new Colorizer();
+    public void solve() {
         startAlgo.setDisable(true);
-        if (DropDown.getValue()=="DFS"){
+        //System.out.println(Thread.activeCount());
+        Cell targetFound;
+        this.colorizer = new Colorizer();
+
+        if (combo.getValue()=="DFS"){
             grid.freePaths();
             grid.revizualize();
-            RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(c);
+            RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(this.colorizer,startAlgo);
             rdf.rdfssolve(grid,1,1);
             }
-        if (DropDown.getValue()=="BFS"){
+        if (combo.getValue()=="BFS"){
             grid.freePaths();
             grid.revizualize();
-            BreadthFirstSearch bfs = new BreadthFirstSearch(c);
-            bfs.bfs(grid,1,1);
+            BreadthFirstSearch bfs = new BreadthFirstSearch(this.colorizer);
+            targetFound=bfs.bfs(grid,1,1);
+            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
-        if (DropDown.getValue()=="Dijkstra"){
+        if (combo.getValue()=="Dijkstra"){
             grid.freePaths();
             grid.revizualize();
-            Dijkstra dij = new Dijkstra(c,grid);
-            dij.dijkstraAlgorithm(19,19,41,41);
+            Dijkstra dij = new Dijkstra(this.colorizer,grid);
+            targetFound=dij.dijkstraAlgorithm(19,19,41,41);
             //dij.testDijkstra();
+            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.BLUE,Color.BLUE,10);
         }
-        if (DropDown.getValue()=="A-Star"){
+        if (combo.getValue()=="A-Star"){
             grid.freePaths();
             grid.revizualize();
-            AStar k  =new AStar(c,grid,1,1,41,41);
-            k.aStarAlgorithm();
+            AStar k  =new AStar(this.colorizer,grid,1,1,41,41);
+            targetFound=k.aStarAlgorithm();
+            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
-        startAlgo.setDisable(false);
+
     }
 
     public void initialize(int rows, int cols){
@@ -93,10 +101,10 @@ public class GridMazeGuiController{
         grid = new GridMaze(cols,rows,mazePane);
         grid.gridClone = grid.grid.clone();
 
+
         grid.changeCellType(41,41, Cell.typeOfField.Target);
 
-
-        DropDown.getItems().addAll(Algorithms);
+        combo.getItems().addAll(Algorithms);
     }
 
 

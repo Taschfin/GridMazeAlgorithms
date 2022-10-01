@@ -3,6 +3,7 @@ package GridMazeAlgorithm.Algorithms;
 import GridMazeAlgorithm.Cell;
 import GridMazeAlgorithm.Colorizer;
 import GridMazeAlgorithm.GridMaze;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;
@@ -15,10 +16,11 @@ import java.util.concurrent.TimeUnit;
 public class BreadthFirstSearch {
 
     Colorizer colorizer;
-    public BreadthFirstSearch(Colorizer colorizer){
+    public BreadthFirstSearch( Colorizer colorizer){
+
         this.colorizer = colorizer;
     }
-    public void bfs(GridMaze G, int x, int y)  {
+    public Cell bfs(GridMaze G, int x, int y)  {
         LinkedList<int[]> queue = new LinkedList<int[]>();
 
         G.grid[y][x].changeVisitable(false);
@@ -33,8 +35,7 @@ public class BreadthFirstSearch {
 
             if (G.grid[m[0]][m[1]].field == Cell.typeOfField.Target){
                 this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,10);
-                this.colorizer.drawPath(G,G.grid[m[0]][m[1]].pathToRoot(),Color.RED,Color.RED,10);
-                return;
+                return G.grid[m[0]][m[1]];
             }
             this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,1);
 
@@ -49,6 +50,7 @@ public class BreadthFirstSearch {
             }
             this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.LAWNGREEN,Color.LAWNGREEN,1);
         }
+        return null;
     }
 
 }

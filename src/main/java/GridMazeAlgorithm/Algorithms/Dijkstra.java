@@ -3,6 +3,7 @@ package GridMazeAlgorithm.Algorithms;
 import GridMazeAlgorithm.Cell;
 import GridMazeAlgorithm.Colorizer;
 import GridMazeAlgorithm.GridMaze;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 import java.util.Arrays;
@@ -26,7 +27,9 @@ public class Dijkstra {
     public void initizialize(int x, int y){
         this.G.grid[y][x].setDistance(0);
 
-        colorizer.drawCell(this.G.grid[y][x],Color.BLUE,Color.BLUE,5);
+        Color color = new Color(1, 0, 0.1,1);
+
+        colorizer.drawCell(this.G.grid[y][x],color,color,5);
         //this.G.grid[y][x].changeTypeOfField(Cell.typeOfField.Root);
         this.Q = new LinkedList<Cell>();
         for (Cell[] m : G.grid) {
@@ -40,20 +43,23 @@ public class Dijkstra {
         }
     }
 
-    public void dijkstraAlgorithm(int x, int y,int xtar, int ytar){
+    public Cell dijkstraAlgorithm(int x, int y,int xtar, int ytar){
         initizialize(x,y);
-        double k=1;
+        double k=0.99;
         while (!this.Q.isEmpty()){
             Cell u = extractMin();
+            if(u == G.grid[ytar][xtar]){
+                return u;
+            }
             for(Cell neighbour : G.freeAdjacentCells(u)){
                 if (Q.contains(neighbour)){
                     updateDistance(u,neighbour);
                     Color c;
-                    if(k > 0.4){
-                         c = new Color(0.1, 0.2, 0.8,k);
+                    if(k > 0.2){
+                         c = new Color(k, (1.0-k), 0.0,k);
                     }
                     else {
-                        c = new Color(0.1, 0.2, 0.8,0.4);
+                        c = new Color(0.2, 0.8, 0.0,0.2);
                     }
 
                     colorizer.drawCell(neighbour,c,c,3);
@@ -63,7 +69,7 @@ public class Dijkstra {
         }
         LinkedList<int[]> p = pathFrom1to2(ytar  , xtar);
         //GridMaze.printAdj(p);
-        this.colorizer.drawPath(this.G,p,Color.RED,Color.RED,10);
+        return null;
     }
 
     public Cell extractMin(){

@@ -18,6 +18,9 @@ public class Cell implements Comparable<Cell>{
     public double x;
     public double y;
 
+    public double width;
+    public double height;
+
     public int indexX;
     public int indexY;
 
@@ -37,6 +40,8 @@ public class Cell implements Comparable<Cell>{
         this.distance = Double.POSITIVE_INFINITY;
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.indexX = indexX;
         this.indexY = indexY;
         this.prev = prev;
@@ -78,6 +83,7 @@ public class Cell implements Comparable<Cell>{
     public void setFScore(double fScore){
         this.fScore = fScore;
     }
+
 
     public LinkedList<int[]> pathToRoot(){
         LinkedList<int[]> path =  new LinkedList<int[]>();

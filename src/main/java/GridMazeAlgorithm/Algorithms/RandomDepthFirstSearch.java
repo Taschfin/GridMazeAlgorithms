@@ -6,6 +6,7 @@ import GridMazeAlgorithm.GridMaze;
 import javafx.animation.FillTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -19,8 +20,12 @@ public class RandomDepthFirstSearch {
     Colorizer c;
     boolean found = false;
 
-    public RandomDepthFirstSearch(Colorizer c){
+    Button start;
+
+
+    public RandomDepthFirstSearch(Colorizer c,Button start){
         this.c = c;
+        this.start = start;
     }
 
 
@@ -72,16 +77,14 @@ public class RandomDepthFirstSearch {
 
         if (G.grid[y][x].field == Cell.typeOfField.Target) {
             c.drawCell(G.grid[y][x],Color.RED,Color.RED,10);
-            c.drawPath(G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
+            this.c.drawPath(this.start,G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
             found = true;
-            return;
         }
 
         for (int[] neighbour: neighbours){
             G.grid[neighbour[0]][neighbour[1]].changePrev(G.grid[y][x]);
             rdfssolve(G,neighbour[0],neighbour[1]);
         }
-
 
     }
 

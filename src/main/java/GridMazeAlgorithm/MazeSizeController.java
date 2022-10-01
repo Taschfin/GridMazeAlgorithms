@@ -45,9 +45,10 @@ public class MazeSizeController {
 
 
         GridMazeGuiController scene2Controller = loader.getController();
-        scene2Controller.initialize(amountOfRows,amountOfCols);
+
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene2Controller.initialize(stage,amountOfRows,amountOfCols);
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();

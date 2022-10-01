@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class Colorizer{
 
-    private Executor executor;
+    public ExecutorService executor;
     public boolean exit=false;
 
     public Colorizer(){
@@ -24,7 +24,6 @@ public class Colorizer{
 
     public void drawCell(Cell c, Color fill,Color stroke,long sleep)
     {
-
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -55,7 +54,6 @@ public class Colorizer{
                 Platform.runLater(() -> {
                     startAlgo.setDisable(false);
                 });
-                Platform.exit();
             }
         };
 
@@ -108,5 +106,8 @@ public class Colorizer{
         };
 
         this.executor.execute(runnable);
+    }
+
+    public static void main(String[] args) {
     }
 }

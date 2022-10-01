@@ -4,7 +4,9 @@ import GridMazeAlgorithm.Algorithms.AStar;
 import GridMazeAlgorithm.Algorithms.BreadthFirstSearch;
 import GridMazeAlgorithm.Algorithms.Dijkstra;
 import GridMazeAlgorithm.Algorithms.RandomDepthFirstSearch;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -31,8 +34,8 @@ public class GridMazeGuiController{
     @FXML
     private ComboBox combo;
 
-    private final float mazePaneWidth = 500;
-    private final float mazePaneHeight = 500;
+    private double mazePaneWidth;
+    private double mazePaneHeight;
 
     private int cols;
     private int rows;
@@ -59,7 +62,6 @@ public class GridMazeGuiController{
 
     public void solve() {
         startAlgo.setDisable(true);
-        //System.out.println(Thread.activeCount());
         Cell targetFound;
 
 
@@ -91,12 +93,16 @@ public class GridMazeGuiController{
             targetFound=k.aStarAlgorithm();
             colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
-
     }
 
-    public void initialize(int rows, int cols){
+    public void initialize(Stage s,int rows, int cols){
         this.rows = rows;
         this.cols = cols;
+        this.stage = s;
+
+        mazePaneWidth = mazePane.getWidth();
+        mazePaneHeight = mazePane.getHeight();
+
 
         grid = new GridMaze(cols,rows,mazePane);
         grid.gridClone = grid.grid.clone();
@@ -104,9 +110,19 @@ public class GridMazeGuiController{
 
         grid.changeCellType(21,21, Cell.typeOfField.Target);
         this.colorizer = new Colorizer();
-        System.out.println(Thread.activeCount());
-
         combo.getItems().addAll(Algorithms);
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>()
+        {
+            public void handle(WindowEvent e){
+                try {
+                    closeWindow();
+                }
+                catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -114,12 +130,17 @@ public class GridMazeGuiController{
         root = FXMLLoader.load(getClass().getResource("MazeSize-view.fxml"));
 
         grid = null;
-        this.colorizer = null;
+        this.colorizer.executor.shutdownNow();
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void closeWindow() throws IOException{
+        this.colorizer.executor.shutdownNow();
+        stage.close();
     }
 
 }

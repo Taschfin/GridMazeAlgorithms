@@ -14,6 +14,19 @@
     -fx-cursor: hand;
 }
 
+.btn-cancel{
+    -fx-font-family: "Lato Light";
+    -fx-font-size: 15px;
+    -fx-background-color: #FF1E00;
+    -fx-background-radius: 30;
+}
+
+.btn-cancel:hover{
+    -fx-background-color: #990000;
+    -fx-cursor: hand;
+}
+
+
 .select{
     -fx-font-family: "Lato Light";
     -fx-font-size: 15px;

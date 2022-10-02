@@ -2,6 +2,7 @@ package GridMazeAlgorithm;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -15,7 +16,8 @@ import java.util.concurrent.Executors;
 public class Colorizer{
 
     public ExecutorService executor;
-    public boolean exit=false;
+    Line l;
+    Line l2;
 
     public Colorizer(){
         this.executor = Executors.newSingleThreadExecutor();
@@ -40,10 +42,11 @@ public class Colorizer{
     }
 
 
-    public  void drawPath(Button startAlgo,GridMaze G, LinkedList<int[]> path, Color fill, Color stroke, int sleep){
+    public  void drawPath(Button cancel, GridMaze G, LinkedList<int[]> path, Color fill, Color stroke, int sleep){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                cancel.setVisible(false);
                 for (int[] c : path) {
                     G.grid[c[0]][c[1]].changeColor(fill, stroke);
                     try {
@@ -51,8 +54,23 @@ public class Colorizer{
                     } catch (InterruptedException ex) {
                     }
                 }
+            }
+        };
+
+        this.executor.execute(runnable);
+    }
+
+    public  void uiManagemant(Button startAlgo, ComboBox heuri, ComboBox algor,Button cancel){
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
                 Platform.runLater(() -> {
+                    algor.setDisable(false);
                     startAlgo.setDisable(false);
+                    cancel.setVisible(false);
+                    if (heuri!=null) {
+                        heuri.setDisable(false);
+                    }
                 });
             }
         };
@@ -61,6 +79,7 @@ public class Colorizer{
     }
 
     public  void drawHeuristic(String heuristic,GridMaze G,Line l, Line l2,Color stroke, double strokeWidth,int sleep){
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -85,12 +104,17 @@ public class Colorizer{
                 } catch (InterruptedException ex) {
 
                 }
+
+                Platform.runLater(() -> {
+                    G.canvas.getChildren().remove(l);
+                    if(heuristic == "Manhattan") {
+                        G.canvas.getChildren().remove(l2);
+                    }
+                });
             }
 
 
         };
-
-
         this.executor.execute(runnable);
     }
 

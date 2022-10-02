@@ -7,6 +7,7 @@ import javafx.animation.FillTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -16,16 +17,14 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class RandomDepthFirstSearch {
-
     Colorizer c;
     boolean found = false;
 
-    Button start;
+    Button cancel;
 
-
-    public RandomDepthFirstSearch(Colorizer c,Button start){
+    public RandomDepthFirstSearch(Button cancel,Colorizer c){
+        this.cancel = cancel;
         this.c = c;
-        this.start = start;
     }
 
 
@@ -77,7 +76,7 @@ public class RandomDepthFirstSearch {
 
         if (G.grid[y][x].field == Cell.typeOfField.Target) {
             c.drawCell(G.grid[y][x],Color.RED,Color.RED,10);
-            this.c.drawPath(this.start,G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
+            this.c.drawPath(cancel,G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
             found = true;
         }
 

@@ -13,10 +13,6 @@ public class Dijkstra {
 
     Colorizer colorizer;
     GridMaze G;
-
-    int x;
-    int y;
-
     LinkedList<Cell> Q;
 
     public Dijkstra(Colorizer colorizer, GridMaze g){
@@ -30,12 +26,11 @@ public class Dijkstra {
         Color color = new Color(1, 0, 0.1,1);
 
         colorizer.drawCell(this.G.grid[y][x],color,color,5);
-        //this.G.grid[y][x].changeTypeOfField(Cell.typeOfField.Root);
+
         this.Q = new LinkedList<Cell>();
         for (Cell[] m : G.grid) {
             for (Cell k: m){
                 if(k.field == Cell.typeOfField.FreeField || k.field == Cell.typeOfField.Target){
-                            //System.out.println("X : "+ k.indexX +" Y: "+ k.indexY);
 
                     this.Q.add(k);
                 }
@@ -43,12 +38,12 @@ public class Dijkstra {
         }
     }
 
-    public Cell dijkstraAlgorithm(int x, int y,int xtar, int ytar){
+    public Cell dijkstraAlgorithm(int x, int y){
         initizialize(x,y);
         double k=0.99;
         while (!this.Q.isEmpty()){
             Cell u = extractMin();
-            if(u == G.grid[ytar][xtar]){
+            if(u.field == Cell.typeOfField.Target){
                 return u;
             }
             for(Cell neighbour : G.freeAdjacentCells(u)){
@@ -67,8 +62,7 @@ public class Dijkstra {
             }
             k-=0.0005;
         }
-        LinkedList<int[]> p = pathFrom1to2(ytar  , xtar);
-        //GridMaze.printAdj(p);
+
         return null;
     }
 
@@ -90,34 +84,5 @@ public class Dijkstra {
             c2.setDistance(dis);
             c2.changePrev(c1);
         }
-    }
-
-    public void testDijkstra(){
-        for(Cell[] c: G.grid){
-            for(Cell k : c){
-                if(k.field == Cell.typeOfField.FreeField|| k.field == Cell.typeOfField.Target){
-                    System.out.print(k.distance);
-                }
-                else {
-                    System.out.print(" +");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    public LinkedList<int[]> pathFrom1to2(int s1,int s2){
-        LinkedList<int[]> path =  new LinkedList<int[]>();
-
-
-        Cell temp = G.grid[s1][s2];
-
-        while(temp != null){
-            int[] tempCoordinates = {temp.indexY,temp.indexX};
-            path.addFirst(tempCoordinates);
-            temp = temp.prev;
-        }
-
-        return path;
     }
 }

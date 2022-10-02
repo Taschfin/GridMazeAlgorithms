@@ -22,9 +22,7 @@ public class AStar {
 
     Cell target;
     Colorizer colorizer;
-    Button start;
     String heuristic;
-
 
     public AStar(String heuristic,Colorizer c, GridMaze g, int indexY, int indexX, int indexYtar, int indexXtar) {
         this.heuristic = heuristic;
@@ -75,10 +73,8 @@ public class AStar {
             closed.add(temp);
             expand(temp,heuristic);
             if (temp.isTarget()) {
-                this.colorizer.removeHeuristic(heuristic,G,l,l2,5);
                 return temp;
             }
-            this.colorizer.removeHeuristic(heuristic,G,l,l2,5);
         }
 
         return null;
@@ -143,4 +139,5 @@ public class AStar {
             System.out.println(c.distance);
         }
     }
+
 }

@@ -114,8 +114,8 @@ public class Cell implements Comparable<Cell>{
     @Override
     public int compareTo(Cell o) {
         if(this.fScore>o.fScore){
-            return -1;
+            return 1;
         }
-        return 1;
+        return -1;
     }
 }

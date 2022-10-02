@@ -26,8 +26,13 @@ public class GridMazeGuiController{
     private Button backButton;
 
     @FXML
+    private Button generationButton;
+
+    @FXML
     private Button startAlgo;
 
+    @FXML
+    private Button cancelBtn;
     @FXML
     private Pane mazePane;
 
@@ -57,7 +62,27 @@ public class GridMazeGuiController{
 
     private Colorizer colorizer;
 
+
+    public void cancelPressed(){
+        cancelBtn.setVisible(false);
+        colorizer.executor.shutdownNow();
+        colorizer = new Colorizer();
+        grid.freePaths();
+        grid.revizualize();
+        combo.setDisable(false);
+        heuristicSelection.setDisable(false);
+        startAlgo.setDisable(false);
+    }
+
     public void generateRandomMaze()  {
+        if (combo.getSelectionModel().getSelectedItem() != null) {
+            if(heuristicSelection.getSelectionModel().getSelectedItem()==null && combo.getSelectionModel().getSelectedItem().toString()== "A*-Algorithm"){
+                RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
+                grid.freePaths();
+                generatedMaze= true;
+                return;
+            }
+        }
         combo.setDisable(false);
         startAlgo.setDisable(false);
         RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
@@ -72,11 +97,14 @@ public class GridMazeGuiController{
                 heuristicSelection.setVisible(true);
                 if(heuristicSelection.getSelectionModel().getSelectedItem()==null){
                     startAlgo.setDisable(true);
+                } else if (!generatedMaze) {
+                    startAlgo.setDisable(true);
                 } else {
                     startAlgo.setDisable(false);
                 }
             }
             else {
+                generationButton.setDisable(false);
                 if(generatedMaze) {
                     startAlgo.setDisable(false);
                     heuristicSelection.setVisible(false);
@@ -98,37 +126,41 @@ public class GridMazeGuiController{
 
     public void solve() {
         startAlgo.setDisable(true);
+        cancelBtn.setVisible(true);
+        grid.freePaths();
+        grid.revizualize();
+
         Cell targetFound;
-
-
         if (combo.getValue()=="DFS"){
-            grid.freePaths();
-            grid.revizualize();
-            RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(this.colorizer,startAlgo);
+            combo.setDisable(true);
+            RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(cancelBtn,this.colorizer);
             rdf.rdfssolve(grid,1,1);
             }
         if (combo.getValue()=="BFS"){
-            grid.freePaths();
-            grid.revizualize();
+            combo.setDisable(true);
             BreadthFirstSearch bfs = new BreadthFirstSearch(this.colorizer);
             targetFound=bfs.bfs(grid,1,1);
-            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
         if (combo.getValue()=="Dijkstra"){
-            grid.freePaths();
-            grid.revizualize();
+            combo.setDisable(true);
             Dijkstra dij = new Dijkstra(this.colorizer,grid);
-            targetFound=dij.dijkstraAlgorithm(1,1,21,21);
+            targetFound=dij.dijkstraAlgorithm(1,1);
             //dij.testDijkstra();
-            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.BLUE,Color.BLUE,10);
+            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.BLUE,Color.BLUE,10);
         }
         if (combo.getValue()=="A*-Algorithm"){
-            grid.freePaths();
-            grid.revizualize();
-            AStar k  =new AStar(this.heuristicSelection.getSelectionModel().getSelectedItem().toString(),this.colorizer,grid,1,1,21,21);
-            targetFound=k.aStarAlgorithm();
-            colorizer.drawPath(startAlgo,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            combo.setDisable(true);
+            heuristicSelection.setDisable(true);
+            AStar alg  =new AStar(this.heuristicSelection.getSelectionModel().getSelectedItem().toString(),this.colorizer,grid,1,1,11,11);
+            targetFound=alg.aStarAlgorithm();
+            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            colorizer.uiManagemant(startAlgo,heuristicSelection, combo,cancelBtn);
         }
+        else{
+            colorizer.uiManagemant(startAlgo,null, combo,cancelBtn);
+        }
+
     }
 
     public void initialize(Stage s,int rows, int cols){
@@ -144,7 +176,7 @@ public class GridMazeGuiController{
         this.grid.gridClone = grid.grid.clone();
 
 
-        this.grid.changeCellType(21,21, Cell.typeOfField.Target);
+        this.grid.changeCellType(11,11, Cell.typeOfField.Target);
         this.colorizer = new Colorizer();
         this.combo.getItems().addAll(Algorithms);
         this.heuristicSelection.getItems().addAll(this.Heuristics);
@@ -181,6 +213,7 @@ public class GridMazeGuiController{
     public void closeWindow() throws IOException{
         this.colorizer.executor.shutdownNow();
         stage.close();
+        System.exit(0);
     }
 
 }

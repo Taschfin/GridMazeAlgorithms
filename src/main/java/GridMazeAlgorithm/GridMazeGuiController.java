@@ -70,6 +70,7 @@ public class GridMazeGuiController{
         grid.freePaths();
         grid.revizualize();
         combo.setDisable(false);
+        generationButton.setDisable(false);
         heuristicSelection.setDisable(false);
         startAlgo.setDisable(false);
     }
@@ -85,6 +86,7 @@ public class GridMazeGuiController{
         }
 
         if (combo.getSelectionModel().getSelectedItem() != null) {
+            startAlgo.setDisable(true);
             if(heuristicSelection.getSelectionModel().getSelectedItem()==null && combo.getSelectionModel().getSelectedItem().toString()== "A*-Algorithm"){
                 RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
                 grid.freePaths();

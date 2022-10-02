@@ -60,7 +60,7 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void uiManagemant(Button startAlgo, ComboBox heuri, ComboBox algor,Button cancel){
+    public  void uiManagemant(Button generate,Button startAlgo, ComboBox heuri, ComboBox algor,Button cancel){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -68,6 +68,7 @@ public class Colorizer{
                     algor.setDisable(false);
                     startAlgo.setDisable(false);
                     cancel.setVisible(false);
+                    generate.setDisable(false);
                     if (heuri!=null) {
                         heuri.setDisable(false);
                     }

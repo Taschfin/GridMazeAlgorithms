@@ -220,31 +220,6 @@ public class GridMaze {
         grid[indexY][indexX].field = token;
     }
 
-    /*public void printMaze(){
-        for(byte[] k : grid){
-            for(byte m : k){
-                if(m==7){
-                    System.out.print(" -");
-                }
-                else if (m == 3) {
-                    System.out.print(" |");
-                }
-                else if (m == 9) {
-                    System.out.print("x");
-                }
-                else{
-                    System.out.print(" " +m);
-                }
-            }
-            System.out.print("\n");
-        }
-    }*/
-
-    public static void printAdj(LinkedList<int[]> adj){
-        for(int[] cell: adj){
-            System.out.println("Neighbours Y: " + cell[0] + " X: " + cell[1] + "   ");
-        }
-    }
 
     public void revizualize(){
         for(Cell[] m : grid){
@@ -259,23 +234,6 @@ public class GridMaze {
         }
     }
 
-    /*public Cell[][] gridClone(){
-        for(int i = 0; i<=gridHeight;i++){
-            for(int j = 0; j<=gridWidth;j++){
-                this.gridClone[i][j] = grid[i][j].cloneCell();
-            }
-        }
-        return gridClone;
-    }*/
-
-   /* public void copy_reset (){
-        byte[][] m = grid.clone();
-        Rectangle[][] n = rectangles.clone();
-
-        this.grid = m;
-        this.rectangles =n;
-
-        }*/
 
 
 }

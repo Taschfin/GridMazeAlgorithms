@@ -75,6 +75,15 @@ public class GridMazeGuiController{
     }
 
     public void generateRandomMaze()  {
+        if(generatedMaze){
+            mazePane.getChildren().clear();
+            this.grid = new GridMaze(cols,rows,mazePane);
+            RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
+            grid.freePaths();
+            this.grid.changeCellType(11,11, Cell.typeOfField.Target);
+            return;
+        }
+
         if (combo.getSelectionModel().getSelectedItem() != null) {
             if(heuristicSelection.getSelectionModel().getSelectedItem()==null && combo.getSelectionModel().getSelectedItem().toString()== "A*-Algorithm"){
                 RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
@@ -127,6 +136,7 @@ public class GridMazeGuiController{
     public void solve() {
         startAlgo.setDisable(true);
         cancelBtn.setVisible(true);
+        generationButton.setDisable(true);
         grid.freePaths();
         grid.revizualize();
 
@@ -136,13 +146,13 @@ public class GridMazeGuiController{
             RandomDepthFirstSearch rdf = new RandomDepthFirstSearch(cancelBtn,this.colorizer);
             rdf.rdfssolve(grid,1,1);
             }
-        if (combo.getValue()=="BFS"){
+        else if (combo.getValue()=="BFS"){
             combo.setDisable(true);
             BreadthFirstSearch bfs = new BreadthFirstSearch(this.colorizer);
             targetFound=bfs.bfs(grid,1,1);
             colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
         }
-        if (combo.getValue()=="Dijkstra"){
+        else if (combo.getValue()=="Dijkstra"){
             combo.setDisable(true);
             Dijkstra dij = new Dijkstra(this.colorizer,grid);
             targetFound=dij.dijkstraAlgorithm(1,1);
@@ -155,10 +165,10 @@ public class GridMazeGuiController{
             AStar alg  =new AStar(this.heuristicSelection.getSelectionModel().getSelectedItem().toString(),this.colorizer,grid,1,1,11,11);
             targetFound=alg.aStarAlgorithm();
             colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
-            colorizer.uiManagemant(startAlgo,heuristicSelection, combo,cancelBtn);
+            colorizer.uiManagemant(generationButton,startAlgo,heuristicSelection, combo,cancelBtn);
         }
         else{
-            colorizer.uiManagemant(startAlgo,null, combo,cancelBtn);
+            colorizer.uiManagemant(generationButton,startAlgo,null, combo,cancelBtn);
         }
 
     }
@@ -173,7 +183,6 @@ public class GridMazeGuiController{
 
 
         this.grid = new GridMaze(cols,rows,mazePane);
-        this.grid.gridClone = grid.grid.clone();
 
 
         this.grid.changeCellType(11,11, Cell.typeOfField.Target);

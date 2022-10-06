@@ -104,6 +104,7 @@ public class GridMazeOwnController{
     int targetPointY;
 
     public void cancelPressed(){
+        drawPanel.setDisable(false);
         cancelBtn.setVisible(false);
         colorizer.executor.shutdownNow();
         colorizer = new Colorizer();

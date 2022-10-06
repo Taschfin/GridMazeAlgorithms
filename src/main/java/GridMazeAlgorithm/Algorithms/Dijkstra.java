@@ -45,7 +45,6 @@ public class Dijkstra {
         initizialize(x,y);
         double k=0.99;
         double abziehen = 1/((double)Math.min(G.getGridHeight(), G.getGridWidth())*25);
-        System.out.println(abziehen);
         while (!this.Q.isEmpty()){
             Cell u = extractMin();
             Color c;

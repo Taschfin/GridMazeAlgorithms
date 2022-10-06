@@ -46,7 +46,7 @@
                <children>
                   <Button fx:id="generationButton" mnemonicParsing="false" onAction="#generateRandomMaze" styleClass="btn" stylesheets="@GridMaze-style.css" text="Generate Maze" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
                   <Button fx:id="startAlgo" disable="true" mnemonicParsing="false" onAction="#solve" styleClass="btn" stylesheets="@GridMaze-style.css" text="Start Algorithm" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#switchToScene1" stylesheets="@GridMaze-style.css" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#switchToScene1" stylesheets="@GridMaze-style.css" text="&#129044;" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <styleClass>
                         <String fx:value="btn" />
                         <String fx:value="backButton" />
@@ -92,7 +92,7 @@
                         <ComboBox fx:id="heuristicSelection" prefWidth="150.0" promptText="Select heuristic" styleClass="select" stylesheets="@GridMaze-style.css" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
-                  <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancelPressed" styleClass="btn-cancel" stylesheets="@GridMaze-style.css" text="cancel" textFill="WHITE" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
+                  <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#cancelPressed" styleClass="btn-cancel" stylesheets="@GridMaze-style.css" text="&#10006;" textFill="WHITE" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
                         <Insets bottom="10.0" />
                      </GridPane.margin>

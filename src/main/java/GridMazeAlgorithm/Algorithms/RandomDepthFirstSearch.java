@@ -24,6 +24,8 @@ public class RandomDepthFirstSearch {
 
     public int visitedCells=0;
 
+    public Cell target;
+
     public RandomDepthFirstSearch(Button cancel,Colorizer c){
         this.cancel = cancel;
         this.c = c;
@@ -71,15 +73,17 @@ public class RandomDepthFirstSearch {
 
 
         G.grid[y][x].changeVisitable(false);
-        visitedCells++;
+
 
         if(!found) {
-            c.drawCell(G.grid[y][x], Color.MAGENTA, Color.MAGENTA, 10);
+            visitedCells++;
+            c.drawCell(G.grid[y][x], Color.MAGENTA, Color.MAGENTA, 7);
         }
 
         if (G.grid[y][x].field == Cell.typeOfField.Target) {
-            this.c.drawPath(cancel,G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
+            target = G.grid[y][x];
             found = true;
+            return;
         }
 
         for (int[] neighbour: neighbours){
@@ -89,4 +93,23 @@ public class RandomDepthFirstSearch {
 
     }
 
+    public void rdfsSolveForDijkstar(GridMaze G, int y, int x){
+        LinkedList<int[]> neighbours = G.freeAdjacentCells(y,x,true);
+        Collections.shuffle(neighbours);
+
+
+        G.grid[y][x].changeVisitable(false);
+
+        if (G.grid[y][x].field == Cell.typeOfField.Target) {
+            target = G.grid[y][x];
+            found = true;
+            return;
+        }
+
+        for (int[] neighbour: neighbours){
+            G.grid[neighbour[0]][neighbour[1]].changePrev(G.grid[y][x]);
+            rdfsSolveForDijkstar(G,neighbour[0],neighbour[1]);
+        }
+
+    }
 }

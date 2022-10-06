@@ -4,13 +4,11 @@ import GridMazeAlgorithm.Algorithms.AStar;
 import GridMazeAlgorithm.Algorithms.BreadthFirstSearch;
 import GridMazeAlgorithm.Algorithms.Dijkstra;
 import GridMazeAlgorithm.Algorithms.RandomDepthFirstSearch;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -42,9 +39,6 @@ public class GridMazeGuiController{
     Ellipse startPoint;
     @FXML
     Ellipse targetPoint;
-
-    @FXML
-    private Button backButton;
 
     @FXML
     private Button generationButton;
@@ -75,7 +69,7 @@ public class GridMazeGuiController{
 
     private String[] Algorithms = {"RDFS","BFS","Dijkstra","A*-Algorithm"};
 
-    private String[] Heuristics = {"Manhattan","Euclidean","Fortnite"};
+    private String[] Heuristics = {"Manhattan","Euclidean","Chebyshev"};
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -222,6 +216,9 @@ public class GridMazeGuiController{
             stopTime = System.nanoTime();
             rdf.rdfssolve(grid,startCell.indexY,startCell.indexX);
             visited = rdf.visitedCells;
+            if(rdf.target!=null) {
+                colorizer.drawPath(cancelBtn,grid,rdf.target.pathToRoot(), Color.RED,Color.RED,10);
+            }
             }
         else if (combo.getValue()=="BFS"){
             combo.setDisable(true);
@@ -247,10 +244,10 @@ public class GridMazeGuiController{
             targetFound=alg.aStarAlgorithm();
             stopTime = System.nanoTime();
             colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
-            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,generationButton,startAlgo,heuristicSelection, combo,cancelBtn);
+            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,generationButton,startAlgo,heuristicSelection, combo,cancelBtn,null);
         }
         else{
-            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,generationButton,startAlgo,null, combo,cancelBtn);
+            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,generationButton,startAlgo,null, combo,cancelBtn,null);
         }
     }
 
@@ -265,13 +262,14 @@ public class GridMazeGuiController{
         this.combo.getItems().addAll(Algorithms);
         this.heuristicSelection.getItems().addAll(this.Heuristics);
 
+
         radius = startPoint.getRadiusX();
         points.getStyleClass().add("points");
 
         selection();
         selectionHeuristic();
-        startPoint.setOnMousePressed(event->pressed(event,startPoint,true));
-        targetPoint.setOnMousePressed(event -> pressed(event,targetPoint,false));
+        startPoint.setOnMousePressed(event->pressed(startPoint,true));
+        targetPoint.setOnMousePressed(event -> pressed(targetPoint,false));
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>()
         {
@@ -286,25 +284,20 @@ public class GridMazeGuiController{
         });
     }
 
-    public void pressed(MouseEvent event1,Ellipse point,boolean isStartpoint){
+    public void pressed(Ellipse point,boolean isStartpoint){
         if(isStartpoint) {
-            selectedStart = true;
+            /*Color m = new Color(1,0,0,1);
+            targetPoint.setFill(m);
+            Color c = new Color(0.21,1,0,0.6);
+            point.setFill(c);*/
+            mazePane.setOnMousePressed(event -> pressedCanavas(event, point,true));
         }
         else {
-            selectedTarget=true;
-        }
-
-        if(selectedStart){
-            mazePane.setOnMousePressed(event->pressedCanavas(event,point,isStartpoint));
-            //startPoint.setOnMouseDragged(event->dragged(event));
-        }
-        else{
-            if(isStartpoint){
-                selectedStart=false;
-            }
-            else{
-                selectedTarget=false;
-            }
+            /*Color m = new Color(0.21,1,0,1);
+            startPoint.setFill(m);
+            Color c = new Color(1,0,0,0.6);
+            point.setFill(c);*/
+            mazePane.setOnMousePressed(event -> pressedCanavas(event, point,false));
         }
     }
 
@@ -314,9 +307,10 @@ public class GridMazeGuiController{
         int x = (int) (event.getX() / grid.widthOfOneCell);
         Cell m=grid.grid[y][x];
 
-        if(m.field== Cell.typeOfField.Wall){
+        if(m.field== Cell.typeOfField.Wall || m.field== Cell.typeOfField.Unremovable || m==startCell || m ==targetCell){
             return;
         }
+
 
         if(which) {
             startPointX = x;
@@ -325,6 +319,7 @@ public class GridMazeGuiController{
                 startCell.changeTypeOfField(Cell.typeOfField.FreeField);
             }
             startCell = grid.grid[y][x];
+            mazePane.setOnMousePressed(null);
         }
         else {
             targetPointX = x;
@@ -334,6 +329,7 @@ public class GridMazeGuiController{
             }
             targetCell = grid.grid[y][x];
             targetCell.changeTypeOfField(Cell.typeOfField.Target);
+            mazePane.setOnMousePressed(null);
         }
         if(!mazePane.getChildren().contains(point)) {
             mazePane.getChildren().add(point);
@@ -346,32 +342,6 @@ public class GridMazeGuiController{
         point.setRadiusX(grid.widthOfOneCell-grid.widthOfOneCell*0.6);
         point.setRadiusY(grid.heightOfOneCell-grid.heightOfOneCell*0.6);
     }
-
-    /*public void dragged(MouseEvent event,Ellipse point,boolean which) {
-        int y = (int) ((event.getY()+point.getCenterY()+grid.heightOfOneCell) / grid.heightOfOneCell);
-        int x = (int) ((event.getX()+point.getCenterX()+grid.widthOfOneCell) / grid.widthOfOneCell);
-        Cell m=grid.grid[y][x];
-
-        System.out.println("y: "+y);
-        System.out.println("x: "+x);
-
-        if(which) {
-            startCell = grid.grid[y][x];
-        }
-        else {
-            targetCell = grid.grid[y][x];
-            targetCell.changeTypeOfField(Cell.typeOfField.Target);
-        }
-        if(!mazePane.getChildren().contains(point)) {
-            mazePane.getChildren().add(point);
-        }
-
-        point.setStrokeWidth(grid.widthOfOneCell*0.1);
-        point.setCenterX(event.getX());
-        point.setCenterY(event.getY());
-        point.setRadiusX(grid.widthOfOneCell-grid.widthOfOneCell*0.6);
-        point.setRadiusY(grid.heightOfOneCell-grid.heightOfOneCell*0.6);
-    }*/
 
 
     public void switchToScene1(ActionEvent event) throws IOException {

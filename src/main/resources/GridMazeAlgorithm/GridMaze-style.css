@@ -1,5 +1,5 @@
-.points{
-    -fx-font-family: "Lato";
+.points .list-view{
+    -fx-font-family: "Lato Light";
     -fx-font-size: 100px;
 }
 

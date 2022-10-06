@@ -12,6 +12,7 @@ import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -25,8 +26,11 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.lang.annotation.Target;
 
 public class GridMazeOwnController{
+    @FXML
+    Label notFound;
 
     @FXML
     Label startLabel;
@@ -58,7 +62,13 @@ public class GridMazeOwnController{
     private Button pencilButton;
 
     @FXML
+    private Button eraseButton;
+
+    @FXML
     private GridPane points;
+
+    @FXML
+    private GridPane drawPanel;
 
     @FXML
     private Pane mazePane;
@@ -77,7 +87,7 @@ public class GridMazeOwnController{
 
     private String[] Algorithms = {"RDFS","BFS","Dijkstra","A*-Algorithm"};
 
-    private String[] Heuristics = {"Manhattan","Euclidean","Fortnite"};
+    private String[] Heuristics = {"Manhattan","Euclidean","Chebyshev"};
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -86,8 +96,6 @@ public class GridMazeOwnController{
 
     Cell startCell;
     Cell targetCell;
-    boolean selectedStart;
-    boolean selectedTarget;
     double radius;
 
     int startPointX;
@@ -106,7 +114,28 @@ public class GridMazeOwnController{
         startAlgo.setDisable(false);
     }
 
+    public void pencilPressed(){
+        pencilButton.setDisable(true);
+        eraseButton.setDisable(false);
+        mazePane.setOnMousePressed(null);
+        mazePane.setOnMouseDragged(null);
+        mazePane.setOnMouseDragged(event -> drawWall(event));
+        mazePane.setOnMousePressed(event -> drawWall(event));
+    }
+
+    public void erasePressed(){
+        pencilButton.setDisable(false);
+        eraseButton.setDisable(true);
+        mazePane.setOnMousePressed(null);
+        mazePane.setOnMouseDragged(null);
+        mazePane.setOnMouseDragged(event -> eraseWall(event));
+        mazePane.setOnMousePressed(event -> eraseWall(event));
+    }
+
     public void clearPressed(){
+        notFound.setVisible(false);
+        eraseButton.setDisable(false);
+        pencilButton.setDisable(false);
         startCell =null;
         targetCell = null;
         grid.freePathsOwn();
@@ -162,12 +191,6 @@ public class GridMazeOwnController{
     }
 
     public void solve() {
-        for(Cell[] m: grid.grid){
-            for (Cell c: m){
-                System.out.print(c.field);
-            }
-            System.out.println();
-        }
         if(!(mazePane.getChildren().contains(startPoint)&&mazePane.getChildren().contains(targetPoint))){
             requirement.setVisible(true);
             return;
@@ -175,14 +198,16 @@ public class GridMazeOwnController{
         if(combo.getSelectionModel().getSelectedItem()==null){
             return;
         }
+        notFound.setVisible(false);
         requirement.setVisible(false);
         startAlgo.setDisable(true);
         cancelBtn.setVisible(true);
+        drawPanel.setDisable(true);
         grid.freePaths();
         grid.revizualize(true);
         points.getChildren().clear();
 
-        Cell targetFound;
+        Cell targetFound =null;
         long startTime = System.nanoTime();
         long stopTime = 0;
         int visited = 0;
@@ -192,6 +217,10 @@ public class GridMazeOwnController{
             stopTime = System.nanoTime();
             rdf.rdfssolve(grid,startCell.indexY,startCell.indexX);
             visited = rdf.visitedCells;
+            targetFound=rdf.target;
+            if(targetFound!=null) {
+                colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            }
         }
         else if (combo.getValue()=="BFS"){
             combo.setDisable(true);
@@ -199,7 +228,9 @@ public class GridMazeOwnController{
             targetFound=bfs.bfs(grid,startCell.indexX,startCell.indexY);
             stopTime = System.nanoTime();
             visited = bfs.visitedCells;
-            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            if(targetFound!=null) {
+                colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
+            }
         }
         else if (combo.getValue()=="Dijkstra"){
             combo.setDisable(true);
@@ -207,7 +238,9 @@ public class GridMazeOwnController{
             targetFound=dij.dijkstraAlgorithm(startCell.indexX,startCell.indexY);
             stopTime = System.nanoTime();
             visited = dij.visitedCells;
-            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.BLUE,Color.BLUE,10);
+            if(targetFound!=null) {
+                colorizer.drawPath(cancelBtn, grid, targetFound.pathToRoot(), Color.BLUE, Color.BLUE, 10);
+            }
         }
         if (combo.getValue()=="A*-Algorithm"){
             String heuristic = this.heuristicSelection.getSelectionModel().getSelectedItem().toString();
@@ -216,11 +249,16 @@ public class GridMazeOwnController{
             AStar alg  =new AStar(heuristic,this.colorizer,grid,startCell.indexY,startCell.indexX, targetCell.indexY, targetCell.indexX);
             targetFound=alg.aStarAlgorithm();
             stopTime = System.nanoTime();
-            colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
-            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,null,startAlgo,heuristicSelection, combo,cancelBtn);
+            if(targetFound!=null) {
+                colorizer.drawPath(cancelBtn, grid, targetFound.pathToRoot(), Color.RED, Color.RED, 10);
+            }
+            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,null,startAlgo,heuristicSelection, combo,cancelBtn,drawPanel);
         }
         else{
-            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,null,startAlgo,null, combo,cancelBtn);
+            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,null,startAlgo,null, combo,cancelBtn,drawPanel);
+        }
+        if(targetFound==null){
+            notFound.setVisible(true);
         }
     }
 
@@ -240,8 +278,8 @@ public class GridMazeOwnController{
 
         selection();
         selectionHeuristic();
-        startPoint.setOnMousePressed(event->pressed(event,startPoint,true));
-        targetPoint.setOnMousePressed(event -> pressed(event,targetPoint,false));
+        startPoint.setOnMousePressed(event->pressed(startPoint,true));
+        targetPoint.setOnMousePressed(event -> pressed(targetPoint,false));
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>()
         {
@@ -256,25 +294,49 @@ public class GridMazeOwnController{
         });
     }
 
-    public void pressed(MouseEvent event1,Ellipse point,boolean isStartpoint){
-        if(isStartpoint) {
-            selectedStart = true;
+    public void drawWall(MouseEvent event){
+        int y = (int) (event.getY() / grid.heightOfOneCell);
+        int x = (int) (event.getX() / grid.widthOfOneCell);
+        if(!(0<=event.getY() && event.getY()< 500 && 0<=event.getX() && event.getX()< 500)){
+            return;
         }
-        else {
-            selectedTarget=true;
+        Cell m=grid.grid[y][x];
+        if(m.field== Cell.typeOfField.Wall || m.field== Cell.typeOfField.Unremovable || m==startCell || m ==targetCell){
+            return;
         }
+        m.changeColor(Color.BLACK,Color.BLACK);
+        m.changeTypeOfField(Cell.typeOfField.Wall);
+    }
 
-        if(selectedStart){
-            mazePane.setOnMousePressed(event->pressedCanavas(event,point,isStartpoint));
-            //startPoint.setOnMouseDragged(event->dragged(event));
+    public void eraseWall(MouseEvent event){
+        notFound.setVisible(false);
+        int y = (int) (event.getY() / grid.heightOfOneCell);
+        int x = (int) (event.getX() / grid.widthOfOneCell);
+        if(!(0<=event.getY() && event.getY()< 500 && 0<=event.getX() && event.getX()< 500)){
+            return;
         }
-        else{
-            if(isStartpoint){
-                selectedStart=false;
+        Cell m=grid.grid[y][x];
+        if(m.field== Cell.typeOfField.Unremovable || m==startCell || m ==targetCell){
+            return;
+        }
+        m.changeColor(Color.WHITE,Color.BLACK);
+        m.changeTypeOfField(Cell.typeOfField.FreeField);
+    }
+
+    public void pressed(Ellipse point,boolean isStartpoint){
+        if(isStartpoint) {
+            /*Color m = new Color(1,0,0,1);
+            targetPoint.setFill(m);
+            Color c = new Color(0.21,1,0,0.6);
+            point.setFill(c);*/
+            mazePane.setOnMousePressed(event -> pressedCanavas(event, point,true));
             }
-            else{
-                selectedTarget=false;
-            }
+        else {
+            /*Color m = new Color(0.21,1,0,1);
+            startPoint.setFill(m);
+            Color c = new Color(1,0,0,0.6);
+            point.setFill(c);*/
+            mazePane.setOnMousePressed(event -> pressedCanavas(event, point,false));
         }
     }
 
@@ -284,11 +346,10 @@ public class GridMazeOwnController{
         int x = (int) (event.getX() / grid.widthOfOneCell);
         Cell m=grid.grid[y][x];
 
-
-
         if(m.field== Cell.typeOfField.Wall || m.field== Cell.typeOfField.Unremovable || m==startCell || m ==targetCell){
             return;
         }
+
 
         if(which) {
             startPointX = x;
@@ -297,6 +358,7 @@ public class GridMazeOwnController{
                 startCell.changeTypeOfField(Cell.typeOfField.FreeField);
             }
             startCell = grid.grid[y][x];
+            mazePane.setOnMousePressed(null);
         }
         else {
             targetPointX = x;
@@ -306,6 +368,7 @@ public class GridMazeOwnController{
             }
             targetCell = grid.grid[y][x];
             targetCell.changeTypeOfField(Cell.typeOfField.Target);
+            mazePane.setOnMousePressed(null);
         }
         if(!mazePane.getChildren().contains(point)) {
             mazePane.getChildren().add(point);

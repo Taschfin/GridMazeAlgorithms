@@ -247,6 +247,11 @@ public class GridMaze{
         }
     }
 
+    public int getGridHeight() {
+        return gridHeight;
+    }
 
-
+    public int getGridWidth() {
+        return gridWidth;
+    }
 }

@@ -36,8 +36,16 @@ public class Dijkstra {
     }
 
     public Cell dijkstraAlgorithm(int x, int y){
+        RandomDepthFirstSearch checkIfPath = new RandomDepthFirstSearch(null,null);
+        checkIfPath.rdfsSolveForDijkstar(G,y,x);
+        G.freePaths();
+        if(checkIfPath.target==null){
+            return null;
+        }
         initizialize(x,y);
         double k=0.99;
+        double abziehen = 1/((double)Math.min(G.getGridHeight(), G.getGridWidth())*25);
+        System.out.println(abziehen);
         while (!this.Q.isEmpty()){
             Cell u = extractMin();
             Color c;
@@ -48,7 +56,7 @@ public class Dijkstra {
                 c = new Color(0.2, 0.8, 0.0,0.2);
             }
 
-            colorizer.drawCell(u,c,c,3);
+            colorizer.drawCell(u,c,c,7);
             visitedCells++;
             if(u.field == Cell.typeOfField.Target){
                 return u;
@@ -58,7 +66,7 @@ public class Dijkstra {
                     updateDistance(u,neighbour);
                 }
             }
-            k-=0.0005;
+            k-=abziehen;
         }
         return null;
     }

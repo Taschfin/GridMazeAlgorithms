@@ -2,28 +2,20 @@ package GridMazeAlgorithm;
 
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-
-import java.nio.file.Path;
 import java.util.LinkedList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Colorizer{
 
     public ExecutorService executor;
-    Line l;
-    Line l2;
 
     public Colorizer(){
         this.executor = Executors.newSingleThreadExecutor();
@@ -40,7 +32,6 @@ public class Colorizer{
                 try {
                     Thread.sleep(sleep);
                 } catch (InterruptedException ex) {
-
                 }
             }
         };
@@ -66,7 +57,7 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void uiManagemant(GridPane panel, Label start, Label target,int visited, long timeLabel, Button generate, Button startAlgo, ComboBox heuri, ComboBox algor, Button cancel){
+    public  void uiManagemant(GridPane panel, Label start, Label target,int visited, long timeLabel, Button generate, Button startAlgo, ComboBox heuri, ComboBox algor, Button cancel,GridPane drawPanel){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -74,6 +65,9 @@ public class Colorizer{
                     if(panel.getChildren().size()>2){
                         panel.getChildren().clear();
                         panel.getChildren().clear();
+                    }
+                    if(drawPanel!=null){
+                        drawPanel.setDisable(false);
                     }
                     Label l = new Label("Execution Time:");
                     Label l2 = new Label("Visited Cells:");
@@ -109,7 +103,7 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void drawHeuristic(String heuristic,GridMaze G,Line l, Line l2,Color stroke, double strokeWidth,int sleep){
+    public  void drawHeuristic(String heuristic,GridMaze G,Line l, Line l2,Color stroke, double strokeWidth,int sleep, boolean xBigger) {
 
         Runnable runnable = new Runnable() {
             @Override
@@ -124,6 +118,19 @@ public class Colorizer{
                     } else if (heuristic == "Euclidean") {
                         l.setStrokeWidth(strokeWidth);
                         l.setStroke(stroke);
+                    } else {
+                        if (xBigger) {
+                            l2.setStrokeWidth(strokeWidth);
+                            l2.setStroke(Color.RED);
+                            l.setStrokeWidth(strokeWidth);
+                            l.setStroke(Color.YELLOW);
+                        } else {
+                            l.setStrokeWidth(strokeWidth);
+                            l.setStroke(Color.RED);
+                            l2.setStrokeWidth(strokeWidth);
+                            l2.setStroke(Color.YELLOW);
+                        }
+                        G.canvas.getChildren().add(l2);
                     }
                     G.canvas.getChildren().add(l);
 
@@ -138,7 +145,7 @@ public class Colorizer{
 
                 Platform.runLater(() -> {
                     G.canvas.getChildren().remove(l);
-                    if(heuristic == "Manhattan") {
+                    if (heuristic != "Euclidean") {
                         G.canvas.getChildren().remove(l2);
                     }
                 });
@@ -148,8 +155,9 @@ public class Colorizer{
         };
         this.executor.execute(runnable);
     }
+}
 
-    public  void removeHeuristic(String heuristic,GridMaze G,Line l, Line l2,int sleep){
+    /*public  void removeHeuristic(String heuristic,GridMaze G,Line l, Line l2,int sleep){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -168,6 +176,5 @@ public class Colorizer{
             }
         };
         this.executor.execute(runnable);
-    }
+    }*/
 
-}

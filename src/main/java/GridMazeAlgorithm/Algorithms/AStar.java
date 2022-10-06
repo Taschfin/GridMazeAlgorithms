@@ -3,7 +3,6 @@ package GridMazeAlgorithm.Algorithms;
 import GridMazeAlgorithm.Cell;
 import GridMazeAlgorithm.Colorizer;
 import GridMazeAlgorithm.GridMaze;
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -37,7 +36,7 @@ public class AStar {
         this.indexYtar = indexYtar;
         this.open = new PriorityQueue<Cell>();
         this.closed = new LinkedList<Cell>();
-        target = g.grid[indexYtar][indexYtar];
+        target = g.grid[indexYtar][indexXtar];
     }
 
 
@@ -55,6 +54,8 @@ public class AStar {
 
             Cell temp = open.poll();
 
+            boolean xBigger = false;
+
             double transFromX = temp.x + temp.width / 2.0;
             double transFromY = temp.y + temp.height / 2.0;
 
@@ -69,9 +70,15 @@ public class AStar {
             else {
                 l = new Line(transFromX, transFromY, transFromX, transToY);
                 l2= new Line(transFromX,transToY,transToX,transToY);
+                if (Math.abs(temp.indexX- target.indexX)>Math.abs(temp.indexY- target.indexY)){
+                    xBigger = true;
+                }
+                else {
+                    xBigger = false;
+                }
             }
 
-            this.colorizer.drawHeuristic(heuristic,G,l,l2,Color.YELLOW, 5,30);
+            this.colorizer.drawHeuristic(heuristic,G,l,l2,Color.YELLOW, 3,30,xBigger);
 
             closed.add(temp);
             expand(temp,heuristic);
@@ -85,7 +92,7 @@ public class AStar {
 
 
     public void expand(Cell c,String heuristic) {
-        this.colorizer.drawCell(c, Color.BLUE,Color.BLUE,10);
+        this.colorizer.drawCell(c, Color.BLUE,Color.BLUE,7);
         visitedCells++;
         for (Cell neighbour : this.G.freeAdjacentCells(c)) {
             if (closed.contains(neighbour)) {
@@ -103,12 +110,12 @@ public class AStar {
 
             double f;
             if (heuristic == "Manhattan"){
-                f = dis + Metriken.manhatten(neighbour, target);
+                f = dis + Metrices.manhatten(neighbour, target);
             } else if (heuristic == "Euclidean") {
-                f = dis + Metriken.euclidean(neighbour, target);
+                f = dis + Metrices.euclidean(neighbour, target);
             }
             else {
-                f=0;
+                f= dis + Metrices.chebyshev(neighbour,target);
             }
             
 

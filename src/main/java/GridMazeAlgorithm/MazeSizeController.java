@@ -31,13 +31,38 @@ public class MazeSizeController {
     private Button btn;
 
     @FXML
-    private Label text;
+    private Label errorMessage;
 
 
 
     public void switchToScene2(ActionEvent event) throws IOException {
-        int amountOfRows = Integer.parseInt(columns.getText());
-        int amountOfCols = Integer.parseInt(rows.getText());
+        int amountOfRows = 1;
+        int amountOfCols = 1;
+
+
+        try {
+            amountOfRows = Integer.parseInt(columns.getText());
+            amountOfCols = Integer.parseInt(rows.getText());
+
+            if(amountOfCols<=0 || amountOfRows <= 0){
+                errorMessage.setText("Integers have to be positive.");
+                errorMessage.setVisible(true);
+                return;
+            } else if (amountOfCols == 1 && amountOfRows == 1) {
+                errorMessage.setText("Grid have to be at least 1X2 or 2X1");
+                errorMessage.setVisible(true);
+                return;
+            }
+            else if(amountOfRows>50 || amountOfCols > 50){
+                errorMessage.setText("You can't have more than 50 rows or columns");
+                errorMessage.setVisible(true);
+                return;
+            }
+        }catch (Exception e){
+            errorMessage.setText("Input is not Valid");
+            errorMessage.setVisible(true);
+            return;
+        }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GridMaze-view.fxml"));
 
@@ -55,8 +80,32 @@ public class MazeSizeController {
     }
 
     public void switchToScene3(ActionEvent event) throws IOException {
-        int amountOfRows = Integer.parseInt(columns.getText());
-        int amountOfCols = Integer.parseInt(rows.getText());
+        int amountOfRows = 1;
+        int amountOfCols = 1;
+
+        try {
+            amountOfRows = Integer.parseInt(columns.getText());
+            amountOfCols = Integer.parseInt(rows.getText());
+
+            if(amountOfCols<=0 || amountOfRows <= 0){
+                errorMessage.setText("Integers have to be positive.");
+                errorMessage.setVisible(true);
+                return;
+            } else if (amountOfCols == 1 && amountOfRows == 1) {
+                errorMessage.setText("Grid have to be at least 1X2 or 2X1");
+                errorMessage.setVisible(true);
+                return;
+            }
+            else if(amountOfRows>50 || amountOfCols > 50){
+                errorMessage.setText("You can't have more than 50 rows or columns");
+                errorMessage.setVisible(true);
+                return;
+            }
+        }catch (Exception e){
+            errorMessage.setText("Input is not Valid");
+            errorMessage.setVisible(true);
+            return;
+        }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("GridMazeOwn-view.fxml"));
 

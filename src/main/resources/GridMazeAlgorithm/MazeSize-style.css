@@ -24,3 +24,15 @@
     -fx-background-color: #76b5c5;
     -fx-cursor: hand;
 }
+
+.btnCreate{
+    -fx-font-family: "Lato Light";
+    -fx-font-size: 13px;
+    -fx-background-color: #2596be;
+    -fx-background-radius: 30;
+}
+
+.btnCreate:hover{
+    -fx-background-color: #76b5c5;
+    -fx-cursor: hand;
+}

@@ -27,7 +27,7 @@ public class BreadthFirstSearch {
 
         G.grid[y][x].changeVisitable(false);
 
-        this.colorizer.drawCell(G.grid[y][x],Color.LAWNGREEN,Color.LAWNGREEN,10);
+        this.colorizer.drawCell(G.grid[y][x],Color.LAWNGREEN,Color.LAWNGREEN,7);
         int[] k = {y,x};
 
         queue.add(k);
@@ -45,7 +45,7 @@ public class BreadthFirstSearch {
                     G.grid[w[0]][w[1]].changePrev(G.grid[m[0]][m[1]]);
                     G.grid[w[0]][w[1]].changeVisitable(false);
                     int[] temp = {w[0],w[1]};
-                    this.colorizer.drawCell(G.grid[w[0]][w[1]],Color.LAWNGREEN,Color.LAWNGREEN,10);
+                    this.colorizer.drawCell(G.grid[w[0]][w[1]],Color.LAWNGREEN,Color.LAWNGREEN,7);
                     queue.add(temp);
                 }
             }

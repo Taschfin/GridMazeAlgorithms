@@ -1,11 +1,17 @@
 package GridMazeAlgorithm;
 
 import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -60,15 +66,39 @@ public class Colorizer{
         this.executor.execute(runnable);
     }
 
-    public  void uiManagemant(Button generate,Button startAlgo, ComboBox heuri, ComboBox algor,Button cancel){
+    public  void uiManagemant(GridPane panel, Label start, Label target,int visited, long timeLabel, Button generate, Button startAlgo, ComboBox heuri, ComboBox algor, Button cancel){
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
+                    if(panel.getChildren().size()>2){
+                        panel.getChildren().clear();
+                        panel.getChildren().clear();
+                    }
+                    Label l = new Label("Execution Time:");
+                    Label l2 = new Label("Visited Cells:");
+                    Label runningtime = new Label(timeLabel/1000000.0 +" MS");
+                    Label visitedCells = new Label(""+visited);
+                    l.setFont(Font.font ("Arial", 20));
+                    l2.setFont(Font.font ("Arial", 20));
+                    runningtime.setFont(Font.font ("Arial", 15));
+                    visitedCells.setFont(Font.font ("Arial", 15));
+                    GridPane.setHalignment(l, HPos.CENTER);
+                    GridPane.setHalignment(l2, HPos.CENTER);
+                    GridPane.setHalignment(runningtime, HPos.CENTER);
+                    GridPane.setHalignment(visitedCells, HPos.CENTER);
+                    panel.add(l,0,0);
+                    panel.add(runningtime,0,1);
+                    panel.add(l2,1,0);
+                    panel.add(visitedCells,1,1);
+                    start.setVisible(false);
+                    target.setVisible(false);
                     algor.setDisable(false);
                     startAlgo.setDisable(false);
                     cancel.setVisible(false);
-                    generate.setDisable(false);
+                    if(generate!=null) {
+                        generate.setDisable(false);
+                    }
                     if (heuri!=null) {
                         heuri.setDisable(false);
                     }

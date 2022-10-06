@@ -15,6 +15,8 @@ public class Dijkstra {
     GridMaze G;
     LinkedList<Cell> Q;
 
+    public int visitedCells=0;
+
     public Dijkstra(Colorizer colorizer, GridMaze g){
         this.colorizer = colorizer;
         this.G  = g;
@@ -23,15 +25,10 @@ public class Dijkstra {
     public void initizialize(int x, int y){
         this.G.grid[y][x].setDistance(0);
 
-        Color color = new Color(1, 0, 0.1,1);
-
-        colorizer.drawCell(this.G.grid[y][x],color,color,5);
-
         this.Q = new LinkedList<Cell>();
         for (Cell[] m : G.grid) {
             for (Cell k: m){
                 if(k.field == Cell.typeOfField.FreeField || k.field == Cell.typeOfField.Target){
-
                     this.Q.add(k);
                 }
             }
@@ -43,26 +40,26 @@ public class Dijkstra {
         double k=0.99;
         while (!this.Q.isEmpty()){
             Cell u = extractMin();
+            Color c;
+            if(k > 0.2){
+                c = new Color(k, (1.0-k), 0.0,k);
+            }
+            else {
+                c = new Color(0.2, 0.8, 0.0,0.2);
+            }
+
+            colorizer.drawCell(u,c,c,3);
+            visitedCells++;
             if(u.field == Cell.typeOfField.Target){
                 return u;
             }
             for(Cell neighbour : G.freeAdjacentCells(u)){
                 if (Q.contains(neighbour)){
                     updateDistance(u,neighbour);
-                    Color c;
-                    if(k > 0.2){
-                         c = new Color(k, (1.0-k), 0.0,k);
-                    }
-                    else {
-                        c = new Color(0.2, 0.8, 0.0,0.2);
-                    }
-
-                    colorizer.drawCell(neighbour,c,c,3);
                 }
             }
             k-=0.0005;
         }
-
         return null;
     }
 

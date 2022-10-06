@@ -22,6 +22,8 @@ public class RandomDepthFirstSearch {
 
     Button cancel;
 
+    public int visitedCells=0;
+
     public RandomDepthFirstSearch(Button cancel,Colorizer c){
         this.cancel = cancel;
         this.c = c;
@@ -69,13 +71,13 @@ public class RandomDepthFirstSearch {
 
 
         G.grid[y][x].changeVisitable(false);
+        visitedCells++;
 
         if(!found) {
             c.drawCell(G.grid[y][x], Color.MAGENTA, Color.MAGENTA, 10);
         }
 
         if (G.grid[y][x].field == Cell.typeOfField.Target) {
-            c.drawCell(G.grid[y][x],Color.RED,Color.RED,10);
             this.c.drawPath(cancel,G,G.grid[y][x].pathToRoot(),Color.RED,Color.RED,10);
             found = true;
         }

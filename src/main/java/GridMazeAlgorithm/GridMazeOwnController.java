@@ -4,17 +4,16 @@ import GridMazeAlgorithm.Algorithms.AStar;
 import GridMazeAlgorithm.Algorithms.BreadthFirstSearch;
 import GridMazeAlgorithm.Algorithms.Dijkstra;
 import GridMazeAlgorithm.Algorithms.RandomDepthFirstSearch;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -27,7 +26,7 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
-public class GridMazeGuiController{
+public class GridMazeOwnController{
 
     @FXML
     Label startLabel;
@@ -47,13 +46,16 @@ public class GridMazeGuiController{
     private Button backButton;
 
     @FXML
-    private Button generationButton;
-
-    @FXML
     private Button startAlgo;
 
     @FXML
+    private Button clearButton;
+
+    @FXML
     private Button cancelBtn;
+
+    @FXML
+    private Button pencilButton;
 
     @FXML
     private GridPane points;
@@ -80,8 +82,6 @@ public class GridMazeGuiController{
     private Scene scene;
     private Parent root;
 
-    private boolean generatedMaze=false;
-
     private Colorizer colorizer;
 
     Cell startCell;
@@ -100,69 +100,41 @@ public class GridMazeGuiController{
         colorizer.executor.shutdownNow();
         colorizer = new Colorizer();
         grid.freePaths();
-        grid.revizualize(false);
+        grid.revizualize(true);
         combo.setDisable(false);
-        generationButton.setDisable(false);
         heuristicSelection.setDisable(false);
         startAlgo.setDisable(false);
     }
 
-    public void generateRandomMaze()  {
-        points.setVisible(true);
-        if(generatedMaze){
-            mazePane.getChildren().remove(startPoint);
-            mazePane.getChildren().remove(targetPoint);
-            startPoint.setRadiusX(radius);
-            startPoint.setRadiusY(radius);
-            targetPoint.setRadiusX(radius);
-            targetPoint.setRadiusY(radius);
-            startPoint.setStrokeWidth(5);
-            targetPoint.setStrokeWidth(5);
-            points.getChildren().clear();
-            if(!points.getChildren().contains(startPoint)) {
-                points.add(startPoint, 0, 0);
-            }
-            if(!points.getChildren().contains(targetPoint)) {
-                points.add(targetPoint, 1, 0);
-            }
-
-            Label startLabel = new Label("Start");
-            Label targetLabel = new Label("Target");
-            startLabel.setFont(Font.font ("Arial", 15));
-            targetLabel.setFont(Font.font ("Arial", 15));
-            GridPane.setHalignment(startLabel, HPos.CENTER);
-            GridPane.setHalignment(targetLabel, HPos.CENTER);
-            points.add(startLabel,0,1);
-            points.add(targetLabel,1,1);
-            mazePane.getChildren().clear();
-            this.grid = new GridMaze(cols,rows,mazePane,false);
-            RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
-            grid.freePaths();
-            return;
+    public void clearPressed(){
+        startCell =null;
+        targetCell = null;
+        grid.freePathsOwn();
+        grid.revizualize(true);
+        mazePane.getChildren().remove(startPoint);
+        mazePane.getChildren().remove(targetPoint);
+        startPoint.setRadiusX(radius);
+        startPoint.setRadiusY(radius);
+        targetPoint.setRadiusX(radius);
+        targetPoint.setRadiusY(radius);
+        startPoint.setStrokeWidth(5);
+        targetPoint.setStrokeWidth(5);
+        points.getChildren().clear();
+        if(!points.getChildren().contains(startPoint)) {
+            points.add(startPoint, 0, 0);
+        }
+        if(!points.getChildren().contains(targetPoint)) {
+            points.add(targetPoint, 1, 0);
         }
 
-        if (combo.getSelectionModel().getSelectedItem() != null) {
-            startAlgo.setDisable(true);
-            if(heuristicSelection.getSelectionModel().getSelectedItem()==null && combo.getSelectionModel().getSelectedItem().toString()== "A*-Algorithm"){
-                RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
-                grid.freePaths();
-                generatedMaze= true;
-                return;
-            }
-        }
-
-        RandomDepthFirstSearch.createMazeRDFS(grid,1,1);
-
-        grid.freePaths();
-        generatedMaze= true;
-        combo.setDisable(false);
-
-        if (combo.getSelectionModel().getSelectedItem() == null) {
-            startAlgo.setDisable(true);
-            return;
-        }
-
-        startAlgo.setDisable(false);
+        Label startLabel = new Label("Start");
+        Label targetLabel = new Label("Target");
+        startLabel.setFont(Font.font ("Arial", 15));
+        targetLabel.setFont(Font.font ("Arial", 15));
+        GridPane.setHalignment(startLabel, HPos.CENTER);
+        GridPane.setHalignment(targetLabel, HPos.CENTER);
+        points.add(startLabel,0,1);
+        points.add(targetLabel,1,1);
     }
 
     public  void selection(){
@@ -172,44 +144,42 @@ public class GridMazeGuiController{
                 heuristicSelection.setVisible(true);
                 if(heuristicSelection.getSelectionModel().getSelectedItem()==null){
                     startAlgo.setDisable(true);
-                } else if (!generatedMaze) {
-                    startAlgo.setDisable(true);
                 } else {
                     startAlgo.setDisable(false);
                 }
             }
             else {
-                generationButton.setDisable(false);
-                if(generatedMaze) {
-                    startAlgo.setDisable(false);
-                    heuristicSelection.setVisible(false);
-                }
-                else {
-                    heuristicSelection.setVisible(false);
-                }
+                startAlgo.setDisable(false);
+                heuristicSelection.setVisible(false);
             }
         });
     }
 
     public  void selectionHeuristic(){
         heuristicSelection.setOnAction(event -> {
-            if(generatedMaze) {
-                startAlgo.setDisable(false);
-            }
+            startAlgo.setDisable(false);
         });
     }
 
     public void solve() {
+        for(Cell[] m: grid.grid){
+            for (Cell c: m){
+                System.out.print(c.field);
+            }
+            System.out.println();
+        }
         if(!(mazePane.getChildren().contains(startPoint)&&mazePane.getChildren().contains(targetPoint))){
             requirement.setVisible(true);
+            return;
+        }
+        if(combo.getSelectionModel().getSelectedItem()==null){
             return;
         }
         requirement.setVisible(false);
         startAlgo.setDisable(true);
         cancelBtn.setVisible(true);
-        generationButton.setDisable(true);
         grid.freePaths();
-        grid.revizualize(false);
+        grid.revizualize(true);
         points.getChildren().clear();
 
         Cell targetFound;
@@ -222,7 +192,7 @@ public class GridMazeGuiController{
             stopTime = System.nanoTime();
             rdf.rdfssolve(grid,startCell.indexY,startCell.indexX);
             visited = rdf.visitedCells;
-            }
+        }
         else if (combo.getValue()=="BFS"){
             combo.setDisable(true);
             BreadthFirstSearch bfs = new BreadthFirstSearch(this.colorizer);
@@ -247,10 +217,10 @@ public class GridMazeGuiController{
             targetFound=alg.aStarAlgorithm();
             stopTime = System.nanoTime();
             colorizer.drawPath(cancelBtn,grid,targetFound.pathToRoot(), Color.RED,Color.RED,10);
-            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,generationButton,startAlgo,heuristicSelection, combo,cancelBtn);
+            colorizer.uiManagemant(points,startLabel,targetLabel,alg.visitedCells, stopTime-startTime,null,startAlgo,heuristicSelection, combo,cancelBtn);
         }
         else{
-            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,generationButton,startAlgo,null, combo,cancelBtn);
+            colorizer.uiManagemant(points,startLabel,targetLabel,visited,stopTime-startTime,null,startAlgo,null, combo,cancelBtn);
         }
     }
 
@@ -259,7 +229,7 @@ public class GridMazeGuiController{
         this.cols = cols;
         this.stage = s;
 
-        this.grid = new GridMaze(cols,rows,mazePane,false);
+        this.grid = new GridMaze(cols,rows,mazePane,true);
 
         this.colorizer = new Colorizer();
         this.combo.getItems().addAll(Algorithms);
@@ -314,7 +284,9 @@ public class GridMazeGuiController{
         int x = (int) (event.getX() / grid.widthOfOneCell);
         Cell m=grid.grid[y][x];
 
-        if(m.field== Cell.typeOfField.Wall){
+
+
+        if(m.field== Cell.typeOfField.Wall || m.field== Cell.typeOfField.Unremovable || m==startCell || m ==targetCell){
             return;
         }
 
@@ -346,34 +318,6 @@ public class GridMazeGuiController{
         point.setRadiusX(grid.widthOfOneCell-grid.widthOfOneCell*0.6);
         point.setRadiusY(grid.heightOfOneCell-grid.heightOfOneCell*0.6);
     }
-
-    /*public void dragged(MouseEvent event,Ellipse point,boolean which) {
-        int y = (int) ((event.getY()+point.getCenterY()+grid.heightOfOneCell) / grid.heightOfOneCell);
-        int x = (int) ((event.getX()+point.getCenterX()+grid.widthOfOneCell) / grid.widthOfOneCell);
-        Cell m=grid.grid[y][x];
-
-        System.out.println("y: "+y);
-        System.out.println("x: "+x);
-
-        if(which) {
-            startCell = grid.grid[y][x];
-        }
-        else {
-            targetCell = grid.grid[y][x];
-            targetCell.changeTypeOfField(Cell.typeOfField.Target);
-        }
-        if(!mazePane.getChildren().contains(point)) {
-            mazePane.getChildren().add(point);
-        }
-
-        point.setStrokeWidth(grid.widthOfOneCell*0.1);
-        point.setCenterX(event.getX());
-        point.setCenterY(event.getY());
-        point.setRadiusX(grid.widthOfOneCell-grid.widthOfOneCell*0.6);
-        point.setRadiusY(grid.heightOfOneCell-grid.heightOfOneCell*0.6);
-    }*/
-
-
     public void switchToScene1(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("MazeSize-view.fxml"));
 

@@ -54,4 +54,22 @@ public class MazeSizeController {
         stage.show();
     }
 
+    public void switchToScene3(ActionEvent event) throws IOException {
+        int amountOfRows = Integer.parseInt(columns.getText());
+        int amountOfCols = Integer.parseInt(rows.getText());
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("GridMazeOwn-view.fxml"));
+
+        root = loader.load();
+
+        GridMazeOwnController scene3Controller = loader.getController();
+
+
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene3Controller.initialize(stage,amountOfRows,amountOfCols);
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 }

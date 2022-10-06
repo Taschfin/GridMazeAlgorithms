@@ -1,6 +1,7 @@
 package GridMazeAlgorithm;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -8,60 +9,85 @@ import javafx.scene.shape.Rectangle;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class GridMaze {
+public class GridMaze{
 
     int gridHeight;
     int gridWidth;
-
-    public Cell[][] gridClone;
 
     public Cell[][] grid;
 
     double pixelSizeX = 500;
     double pixelSizeY = 500;
 
-    public Line l;
-    public Line l2;
-
     Pane canvas;
 
+    public double widthOfOneCell;
+    public double heightOfOneCell;
 
-    public GridMaze(int width, int height, Pane mazePane){
-        gridHeight = height*2+1;
-        gridWidth = width*2+1;
+
+    public GridMaze(int width, int height, Pane mazePane, boolean own){
+        if(!own) {
+            gridHeight = height * 2 + 1;
+            gridWidth = width * 2 + 1;
+        }
+        else{
+            gridHeight = height + 2;
+            gridWidth = width + 2;
+        }
         grid = new Cell[gridHeight][gridWidth];
         this.canvas = mazePane;
 
-        double widthOfCell = pixelSizeX/(double) gridWidth;
-        double heightOfCell = pixelSizeY/(double) gridHeight;
+        this.widthOfOneCell = pixelSizeX/(double) gridWidth;
+        this.heightOfOneCell = pixelSizeY/(double) gridHeight;
 
+        if(!own) {
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    Color fill;
+                    Color stroke;
+                    Cell.typeOfField k;
+                    if (i % 2 == 0) {
+                        fill = Color.BLACK;
+                        stroke = Color.BLACK;
+                        k = Cell.typeOfField.Wall;
+                    } else if (j % 2 == 0) {
+                        fill = Color.BLACK;
+                        stroke = Color.BLACK;
+                        k = Cell.typeOfField.Wall;
+                    } else {
+                        fill = Color.WHITE;
+                        stroke = Color.WHITE;
+                        k = Cell.typeOfField.FreeField;
+                    }
+                    Cell c = new Cell(j, i, j * widthOfOneCell, i * heightOfOneCell, widthOfOneCell, heightOfOneCell, fill, stroke, null, k);
 
-        for (int i = 0; i<grid.length;i++){
-            for (int j = 0; j< grid[i].length; j++) {
-                Color fill;
-                Color stroke;
-                Cell.typeOfField k;
-                if (i%2==0){
-                    fill = Color.BLACK;
-                    stroke = Color.BLACK;
-                    k = Cell.typeOfField.Wall;
-                } else if(j%2==0) {
-                    fill = Color.BLACK;
-                    stroke = Color.BLACK;
-                    k = Cell.typeOfField.Wall;
+                    grid[i][j] = c;
+                    mazePane.getChildren().add(c.rec);
                 }
-                else {
-                    fill = Color.WHITE;
-                    stroke = Color.WHITE;
-                    k = Cell.typeOfField.FreeField;
-                }
-                Cell c  = new Cell(j,i,j*widthOfCell,i*heightOfCell,widthOfCell,heightOfCell,fill,stroke,null, k);
-                grid[i][j]=c;
-                mazePane.getChildren().add(c.rec);
             }
         }
+        else{
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    Color fill;
+                    Color stroke;
+                    Cell.typeOfField k;
+                    if (i == 0 || i == gridHeight - 1 || j == 0 || j == gridWidth - 1) {
+                        fill = Color.BLACK;
+                        stroke = Color.BLACK;
+                        k = Cell.typeOfField.Unremovable;
+                    } else {
+                        fill = Color.WHITE;
+                        stroke = Color.BLACK;
+                        k = Cell.typeOfField.FreeField;
+                    }
+                    Cell c = new Cell(j, i, j * widthOfOneCell, i * heightOfOneCell, widthOfOneCell, heightOfOneCell, fill, stroke, null, k);
 
-
+                    grid[i][j] = c;
+                    mazePane.getChildren().add(c.rec);
+                }
+            }
+        }
     }
 
     public void freePaths () {
@@ -69,6 +95,23 @@ public class GridMaze {
             for (int j = 0; j< gridWidth;j++) {
                 if (grid[i][j].field == Cell.typeOfField.FreeField || grid[i][j].field == Cell.typeOfField.Target) {
                     grid[i][j].changeVisitable(true);
+                    grid[i][j].changePrev(null);
+                    grid[i][j].setDistance(Double.POSITIVE_INFINITY);
+                    grid[i][j].fScore = 0;
+                }
+            }
+        }
+    }
+
+    public void freePathsOwn () {
+        for (int i = 0; i< gridHeight;i++) {
+            for (int j = 0; j< gridWidth;j++) {
+                if (grid[i][j].field == Cell.typeOfField.FreeField || grid[i][j].field == Cell.typeOfField.Target||grid[i][j].field == Cell.typeOfField.Wall) {
+                    grid[i][j].changeVisitable(true);
+                    grid[i][j].changePrev(null);
+                    grid[i][j].setDistance(Double.POSITIVE_INFINITY);
+                    grid[i][j].fScore = 0;
+                    grid[i][j].changeTypeOfField(Cell.typeOfField.FreeField);
                 }
             }
         }
@@ -186,46 +229,16 @@ public class GridMaze {
         return grid[pos[0]][pos[1]].visitable;
     }
 
-    public void drawLine(Line l, Line l2){
-        this.l = l;
-        this.l2 =l2;
-        this.canvas.getChildren().add(l);
-        this.canvas.getChildren().add(l2);
-    }
-
-    public void removeLine(){
-        this.canvas.getChildren().remove(this.l);
-        this.canvas.getChildren().remove(this.l2);
-    }
-
-    public void printMaze(){
-        for(Cell[] k : grid){
-            for(Cell m : k){
-                if(Cell.typeOfField.FreeField == m.field){
-                    System.out.print("0");
-                }
-                else {
-                    System.out.print("7");
-                }
-            }
-            System.out.println("");
-        }
-    }
-
-    public void changeCellType(int indexY, int indexX, Cell.typeOfField token){
-        if(!(0<=indexX && indexX<gridWidth && 0<= indexY && indexY < gridHeight)){
-            throw new RuntimeException("X: " + indexX + " or Y: " +indexY+" is not within the boundaries");
-        }
-
-        grid[indexY][indexX].field = token;
-    }
-
-
-    public void revizualize(){
+    public void revizualize(boolean own){
         for(Cell[] m : grid){
             for(Cell k : m){
                 if(k.field == Cell.typeOfField.FreeField || k.field == Cell.typeOfField.Target ){
-                    k.changeColor(Color.WHITE,Color.WHITE);
+                    if(own) {
+                        k.changeColor(Color.WHITE, Color.BLACK);
+                    }
+                    else{
+                        k.changeColor(Color.WHITE, Color.WHITE);
+                    }
                 }
                 else {
                     k.changeColor(Color.BLACK,Color.BLACK);

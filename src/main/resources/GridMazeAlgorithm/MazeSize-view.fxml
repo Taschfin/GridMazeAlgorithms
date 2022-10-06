@@ -16,10 +16,11 @@
   <rowConstraints>
       <RowConstraints maxHeight="322.0" minHeight="10.0" prefHeight="226.0" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="322.0" minHeight="0.0" prefHeight="85.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="297.0" minHeight="0.0" prefHeight="90.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="297.0" minHeight="0.0" prefHeight="77.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="297.0" minHeight="10.0" prefHeight="58.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button fx:id="btn" mnemonicParsing="false" onAction="#switchToScene2" styleClass="btn" stylesheets="@MazeSize-style.css" text="Start" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <Button fx:id="btn" mnemonicParsing="false" onAction="#switchToScene2" styleClass="btn" stylesheets="@MazeSize-style.css" text="Generate Maze" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <font>
             <Font size="15.0" />
          </font>
@@ -53,5 +54,13 @@
             </TextField>
          </children>
       </GridPane>
+      <Button fx:id="btn1" mnemonicParsing="false" onAction="#switchToScene3" styleClass="btn" stylesheets="@MazeSize-style.css" text="Create Own" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+         <font>
+            <Font size="15.0" />
+         </font>
+         <padding>
+            <Insets bottom="5.0" left="25.0" right="25.0" top="5.0" />
+         </padding>
+      </Button>
    </children>
 </GridPane>

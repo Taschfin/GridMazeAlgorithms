@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class BreadthFirstSearch {
 
     Colorizer colorizer;
+
+    public int visitedCells;
     public BreadthFirstSearch( Colorizer colorizer){
 
         this.colorizer = colorizer;
@@ -32,9 +34,8 @@ public class BreadthFirstSearch {
 
         while (!queue.isEmpty()){
             int[] m = queue.removeFirst();
-
+            visitedCells++;
             if (G.grid[m[0]][m[1]].field == Cell.typeOfField.Target){
-                this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,10);
                 return G.grid[m[0]][m[1]];
             }
             this.colorizer.drawCell(G.grid[m[0]][m[1]],Color.RED,Color.RED,1);

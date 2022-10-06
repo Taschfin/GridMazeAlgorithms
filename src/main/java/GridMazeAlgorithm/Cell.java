@@ -1,15 +1,18 @@
 package GridMazeAlgorithm;
 
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.LinkedList;
 
-public class Cell implements Comparable<Cell>{
+public class Cell extends StackPane implements Comparable<Cell>{
 
 
 
-    public enum typeOfField {FreeField, Wall,Root,Target};
+    public enum typeOfField {FreeField, Wall,Unremovable,Target};
 
     public typeOfField field;
 
@@ -27,18 +30,14 @@ public class Cell implements Comparable<Cell>{
     public boolean visitable = false;
 
     public Color stroke;
-    public typeOfField t;
 
     public double fScore;
     public Cell prev;
-    Color fill;
-    Color Stroke;
 
     public Cell(int indexX, int indexY, double x,double y, double width, double height, Color fill, Color stroke,Cell prev, typeOfField t){
         if(t == typeOfField.FreeField || t == typeOfField.Target){
             this.visitable = true;
         }
-        this.t =t;
         this.stroke = stroke;
         this.field = t;
         this.distance = Double.POSITIVE_INFINITY;
@@ -52,6 +51,8 @@ public class Cell implements Comparable<Cell>{
         Rectangle r = new Rectangle(x,y,width,height);
         r.setFill(fill);
         r.setStroke(stroke);
+        r.setStrokeWidth(1);
+
         this.rec=r;
     }
 
@@ -92,7 +93,7 @@ public class Cell implements Comparable<Cell>{
     public LinkedList<int[]> pathToRoot(){
         LinkedList<int[]> path =  new LinkedList<int[]>();
 
-        int[] coordinates = {indexX,indexY};
+        int[] coordinates = {indexY,indexX};
         path.add(coordinates);
 
         Cell temp = this.prev;
@@ -105,9 +106,9 @@ public class Cell implements Comparable<Cell>{
         return path;
     }
 
-    public Cell cloneCell(){
-        Cell c = new Cell(indexX,indexY,x,y,width, height, fill,stroke,prev, t);
-        return c;
+    public int[] getCoordinates(){
+        int[] coor = {this.indexY,this.indexX};
+        return coor;
     }
 
 

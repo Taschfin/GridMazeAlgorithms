@@ -1,5 +1,6 @@
-.Grid-pane{
-
+.points{
+    -fx-font-family: "Lato";
+    -fx-font-size: 100px;
 }
 
 .btn{

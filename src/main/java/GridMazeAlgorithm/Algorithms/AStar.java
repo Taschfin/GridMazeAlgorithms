@@ -24,7 +24,10 @@ public class AStar {
     Colorizer colorizer;
     String heuristic;
 
+    public int visitedCells;
+
     public AStar(String heuristic,Colorizer c, GridMaze g, int indexY, int indexX, int indexYtar, int indexXtar) {
+        visitedCells = 0;
         this.heuristic = heuristic;
         this.G = g;
         this.colorizer = c;
@@ -45,7 +48,7 @@ public class AStar {
         Cell target = G.grid[indexYtar][indexXtar];
 
         double transToX = target.x + target.width / 2.0;
-        double transToY = target.x + target.height / 2.0;
+        double transToY = target.y + target.height / 2.0;
 
 
         while (!open.isEmpty()) {
@@ -80,8 +83,10 @@ public class AStar {
         return null;
     }
 
+
     public void expand(Cell c,String heuristic) {
         this.colorizer.drawCell(c, Color.BLUE,Color.BLUE,10);
+        visitedCells++;
         for (Cell neighbour : this.G.freeAdjacentCells(c)) {
             if (closed.contains(neighbour)) {
                 continue;
@@ -120,24 +125,6 @@ public class AStar {
         }
     }
 
-    public void test() {
-        for (Cell[] c : G.grid) {
-            for (Cell k : c) {
-                if (k.field == Cell.typeOfField.FreeField || k.field == Cell.typeOfField.Target) {
-                    System.out.print(k.distance);
-                } else {
-                    System.out.print(" +");
-                }
-            }
-            System.out.println();
-        }
-    }
 
-    public void printQueue(){
-        System.out.println(open.size());
-        for(Cell c: open){
-            System.out.println(c.distance);
-        }
-    }
 
 }
